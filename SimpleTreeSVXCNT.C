@@ -179,7 +179,6 @@ int SimpleTreeSVXCNT::process_event(PHCompositeNode *topNode)
 
   float zvert   =  (vtxout->get_Vertex()).getZ();
 
-  elcut->Fill(0.,min_mom_cut);
   if(abs(zvert) > 10) return 0;
 
   // cout << zvert << endl;
@@ -191,7 +190,6 @@ int SimpleTreeSVXCNT::process_event(PHCompositeNode *topNode)
 
       float mom = trk->get_mom(i);
       isElectronCandidate = 1;
-      if(isElectronCandidate) elcut->Fill(2,mom);
       float dchpx = trk->get_px(i);
       float dchpy = trk->get_py(i);
       float pt = sqrt(dchpx*dchpx+dchpy*dchpy);
@@ -203,11 +201,9 @@ int SimpleTreeSVXCNT::process_event(PHCompositeNode *topNode)
       int quality = trk->get_quality(i);
       if(quality != 31 && quality != 63) continue;
 
-      if(isElectronCandidate) elcut->Fill(3,mom);
 
       float phi = trk->get_phi(i);
       float alpha = trk->get_alpha(i);
-      elacceptance->Fill(phi, alpha);
 
       int n0 = trk->get_n0(i);
       int sn0 = trk->get_sn0(i);
@@ -253,76 +249,13 @@ int SimpleTreeSVXCNT::process_event(PHCompositeNode *topNode)
       ntpdch[14] = trigbitscaled;
       ntpdch[15] = trigbitraw;
 
-      ntpedch->Fill(ntpdch);
-
-      if(isElectronCandidate && abs(emcdz) < emcdz_cut) elcut->Fill(4,mom);
-      elemcdzmatch->Fill(emcdz,mom,cent);
-      if(n0>n0_cut && disp<disp_cut && epcut) elemcdzmatch_e->Fill(emcdz,mom,cent);
-      if(sn0>n0_cut && sdisp<disp_cut && epcut) elemcdzmatch_se->Fill(emcdz,mom,cent);
-
-      if(isElectronCandidate && abs(emcdphi) < emcdphi_cut) elcut->Fill(5,mom);
-      elemcdphimatch->Fill(emcdphi,mom,cent);
-      if(n0>n0_cut && disp<disp_cut && epcut) elemcdphimatch_e->Fill(emcdphi,mom,cent);
-      if(sn0>n0_cut && sdisp<disp_cut && epcut) elemcdphimatch_se->Fill(emcdphi,mom,cent);
-
-      elemcmatch->Fill(emcdphi,emcdz,mom);
-      if(n0>n0_cut && disp<disp_cut && epcut) elemcmatch_e->Fill(emcdphi,emcdz,mom);
-      if(sn0>n0_cut && sdisp<disp_cut && epcut) elemcmatch_se->Fill(emcdphi,emcdz,mom);
-
-      if(!emcmatchcut) continue;
-      if(isElectronCandidate) elcut->Fill(6,mom);
 
       if(mom < min_mom_cut || mom > max_mom_cut) continue;
-      if(isElectronCandidate) elcut->Fill(7,mom);
 
-      bool isSwappedElectronCandidate = isElectronCandidate;
-      if(isElectronCandidate) eln0->Fill(n0,mom,cent);
-      if(isSwappedElectronCandidate) elsn0->Fill(sn0,mom,cent);
-
-      isElectronCandidate &= (n0>n0_cut);
-      isSwappedElectronCandidate &= (sn0>n0_cut);
-
-      if(isElectronCandidate) elcut->Fill(8,mom);
-
-      // if(isElectronCandidate && epcut) elchi2npe0->Fill(chi2npe0,mom,cent);
-      // if(isSwappedElectronCandidate && epcut) elschi2npe0->Fill(schi2npe0,mom,cent);
-
-      // isElectronCandidate &= (chi2npe0 < chi2npe0_cut);
-      // isSwappedElectronCandidate &= (schi2npe0 < chi2npe0_cut);
-
-      if(isElectronCandidate) elcut->Fill(9,mom);
-
-
-      if(isElectronCandidate && epcut) eldisp->Fill(disp,mom,cent);
-      if(isSwappedElectronCandidate && epcut) elsdisp->Fill(sdisp,mom,cent);
-
-      isElectronCandidate &= (disp < disp_cut);
-      isSwappedElectronCandidate &= (sdisp < disp_cut);
-
-      if(isElectronCandidate) elcut->Fill(10,mom);
-      if(isElectronCandidate) eldep->Fill(dep,mom,cent);
-      if(isSwappedElectronCandidate) elsdep->Fill(dep,mom,cent);
-      if(isElectronCandidate) {elep[iarmsect]->Fill(dep,mom,cent);}
-      // if(isSwappedElectronCandidate){ cout << dep << " ," << cent << endl; elsep[iarmsect]->Fill(dep,mom,cent);}
-
-
-      isElectronCandidate &= (epcut);
-      isSwappedElectronCandidate &= (epcut);
-
-      if(isElectronCandidate) elcut->Fill(11,mom);
-      
-      if(isElectronCandidate) elmom2->Fill(mom,cent);
-
-      if(isElectronCandidate) elacceptance_e->Fill(phi,alpha);
-      if(isSwappedElectronCandidate) elacceptance_se->Fill(phi,alpha);
       
       float emc_t0 = trk->get_temc(i);
       float crk_t0 = trk->get_tcrk(i);
       float scrk_t0 = trk->get_stcrk(i);
-      if(isElectronCandidate) elricht0->Fill(crk_t0,mom,cent);
-      if(isElectronCandidate) elemct0->Fill(emc_t0,mom,cent);
-      if(isSwappedElectronCandidate) elsricht0->Fill(scrk_t0,mom,cent);
-      if(isSwappedElectronCandidate) elsemct0->Fill(emc_t0,mom,cent);      
      
     }
    if ((trigbitscaled&0x00000010) == 16)
@@ -397,28 +330,14 @@ int SimpleTreeSVXCNT::process_event(PHCompositeNode *topNode)
       if (n0<=0)	{continue;}
       if (fabs(phi0) < 1.5)
 	{
-	  svxchisqndfe->Fill(chisq/ndf,pt);
-	  svxdcate->Fill(dcat,pt);
-	  svxdcale->Fill(dcal,pt);
-	  svxdepe->Fill(dep,pt);
-	  svxeope->Fill(emce/mom,pt);
-	  svxn0e->Fill(n0,pt);
-	  svxdispe->Fill(disp,pt);
 	}
       else 
 	{
-	  svxchisqndfw->Fill(chisq/ndf,pt);
-	  svxdcatw->Fill(dcat,pt);
-	  svxdcalw->Fill(dcal,pt);
-	  svxdepw->Fill(dep,pt);
-	  svxeopw->Fill(emce/mom,pt);
-	  svxn0w->Fill(n0,pt);
-	  svxdispw->Fill(disp,pt);
 	}
     }
   if ((trigbitscaled&0x00000010) == 16)
     {
-  nsvx->Fill(nsvxtrks);
+      nsvx->Fill(nsvxtrks);
     }
   return 0;
 }
