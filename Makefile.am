@@ -2,7 +2,7 @@
 
  INCLUDES = -I$(includedir) -I$(OFFLINE_MAIN)/include -I$(ROOTSYS)/include 
 
- lib_LTLIBRARIES = libtrinn_SimpleTreeSVXCNT.la
+ lib_LTLIBRARIES = libSimpleTreeSVXCNT.la
 
 noinst_HEADERS = \
    SimpleTreeSVXCNTLinkDef.h
@@ -14,11 +14,11 @@ noinst_HEADERS = \
    -L$(libdir) \
    -L$(OFFLINE_MAIN)/lib
 
- libtrinn_SimpleTreeSVXCNT_la_LIBADD = \
+ libSimpleTreeSVXCNT_la_LIBADD = \
    -L$(libdir) \
    -lCNT
 
- libtrinn_SimpleTreeSVXCNT_la_SOURCES = \
+ libSimpleTreeSVXCNT_la_SOURCES = \
    SimpleTreeSVXCNT.C \
    SimpleTreeSVXCNT_Dict.C
  
@@ -29,7 +29,7 @@ noinst_HEADERS = \
    testexternals
 
  testexternals_LDADD = \
-   libtrinn_SimpleTreeSVXCNT.la
+   libSimpleTreeSVXCNT.la
 
  testexternals.C:
 	echo "//*** this is a generated file. Do not commit, do not edit" > $@
