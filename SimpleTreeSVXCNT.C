@@ -32,21 +32,7 @@
 
 using namespace std;
 
-int d_nevent;
 
-TH1 *centrality = NULL;
-TH1 *zvertex = NULL;
-
-
-
-//added for svxcentral tracks
-
-TH1 *nsvx = NULL;
-TH1 *ndch = NULL;
-
-TNtuple* ntpedch = NULL;  
-TNtuple* ntpesvx = NULL;  
-TFile*   d_OutputFile = NULL;
 
 int SimpleTreeSVXCNT::InitRun(PHCompositeNode *topNode)
 {
@@ -64,22 +50,15 @@ int SimpleTreeSVXCNT::InitRun(PHCompositeNode *topNode)
   disp_cut = 10;
   min_dep_cut = -10;
   max_dep_cut = 10;
-  //  pfoa_cut = 2.5; //in degrees
-  //  deltaZ_cut = 1.0;
-  //  deltaPhi_cut = 0.1;
+  // pfoa_cut = 2.5; //in degrees
+  // deltaZ_cut = 1.0;
+  // deltaPhi_cut = 0.1;
 
-
-  // Fun4AllServer *se = Fun4AllServer::instance();
-  // Fun4AllHistoManager *hm = new Fun4AllHistoManager("hists");
-  // hm->setOutfileName(d_outfilename.c_str());
-  //Fun4AllHistoManager *hm = se->getHistoManager("SimpleTreeSVXCNT");
 
   //-----------------------------
   //tim testing somet nutpple
   //-----------------------------
   d_OutputFile = new TFile(d_outfilename.c_str(),"RECREATE");
-
-
 
 
   ///create and register histograms here
@@ -88,12 +67,7 @@ int SimpleTreeSVXCNT::InitRun(PHCompositeNode *topNode)
 
 
   ////x-axis is variable, y-axis is momentum, z-axis is centrality
-
-
-
   ///elemcmatch: x-axis = dphi, y-axis = dz, z-axis = momentum
-
-
 
   char name[10], title[40];
   for (int iarm = 0; iarm < 2; iarm++)
@@ -108,32 +82,21 @@ int SimpleTreeSVXCNT::InitRun(PHCompositeNode *topNode)
 
       }
 
-
-
-
   // int nptbins = 20;
   // int ptlowedge = 0;
   // int pthighedge = 10;
 
-
-
-
-
-
-
-
   nsvx = new TH1F("nsvx",";number of svx trks per evnt;",30,0,10);
   ndch = new TH1F("ndch",";number of dch trks per evnt;",60,0,20);
-
 
   ntpedch = new TNtuple("ntpedch","","mom:emce:quality:phi:alpha:n0:sn0:disp:sdisp:dep:emcdphi:emcdz:pt:zvtx:scaledtrigbit:rawtrigbit");
   ntpesvx = new TNtuple("ntpesvx","","chisq:ndf:dcat:dcal:pt:disp:sdisp:dep:mom:emce:n0:sn0:quality:phi0:zvtx:scaledtrigbit:rawtrigbit:emcdphi:emcdz");
 
-   
-  
-
   return 0;
+
 }
+
+
 
 int SimpleTreeSVXCNT::process_event(PHCompositeNode *topNode)
 {
@@ -240,19 +203,21 @@ int SimpleTreeSVXCNT::process_event(PHCompositeNode *topNode)
       ntpdch[14] = trigbitscaled;
       ntpdch[15] = trigbitraw;
 
-
       if(mom < min_mom_cut || mom > max_mom_cut) continue;
 
-      
       // float emc_t0 = trk->get_temc(i);
       // float crk_t0 = trk->get_tcrk(i);
       // float scrk_t0 = trk->get_stcrk(i);
      
     }
+
    if ((trigbitscaled&0x00000010) == 16)
     {
       ndch->Fill(numberdchtrks);
     }
+
+
+
   //count the number of SVXCentralTracks with nhit>2, and are good quality
   int nsvxtrks = 0;
   // int maxnumbertracks = svxcnttrklist->get_nCentralTracks();
@@ -310,15 +275,17 @@ int SimpleTreeSVXCNT::process_event(PHCompositeNode *topNode)
       ntpesvx->Fill(ntpsvx);
 
 
-
       if (pt > 1 && pt < 4)
 	{
-      nsvxtrks = nsvxtrks+1;   //iterate the SVXCentralTrack counter
+	  nsvxtrks = nsvxtrks+1;   //iterate the SVXCentralTrack counter
 	}
+
       // float emcdphi = trk->get_emcsdphi_e(dchindex);
       // float emcdz = trk->get_emcsdz_e(dchindex);
       // bool emcmatchcut = (fabs(emcdphi)<emcdphi_cut && fabs(emcdz)<emcdz_cut);
+
       if (n0<=0)	{continue;}
+
       if (fabs(phi0) < 1.5)
 	{
 	}
@@ -326,18 +293,22 @@ int SimpleTreeSVXCNT::process_event(PHCompositeNode *topNode)
 	{
 	}
     }
+
+
   if ((trigbitscaled&0x00000010) == 16)
     {
       nsvx->Fill(nsvxtrks);
     }
+
+
   return 0;
+
 }
+
+
 
 int SimpleTreeSVXCNT::End(PHCompositeNode *topNode)
 {
-    // Fun4AllServer *se = Fun4AllServer::instance();
-    // Fun4AllHistoManager *hm = se->getHistoManager("hists");
-    // hm->dumpHistos();
     cout << "Writing out..." << endl;
     d_OutputFile->Write();
     cout << "Closing output file..." << endl;

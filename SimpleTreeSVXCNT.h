@@ -3,6 +3,9 @@
 
 #include <SubsysReco.h>
 class PHCompositeNode;
+class TFile;
+class TH1;
+class TNtuple;
 
 class SimpleTreeSVXCNT : public SubsysReco
 {
@@ -16,7 +19,7 @@ class SimpleTreeSVXCNT : public SubsysReco
   int InitRun(PHCompositeNode *topNode);
   int process_event(PHCompositeNode *topNode);
   int End(PHCompositeNode *topNode);
-  
+
   void set_zvertex_cut(float tmp){zvertex_cut = tmp;};
   void set_emcdz_cut(float tmp){emcdz_cut = tmp;};
   void set_emcdphi_cut(float tmp){emcdphi_cut = tmp;};
@@ -27,8 +30,10 @@ class SimpleTreeSVXCNT : public SubsysReco
   void set_disp_cut(float tmp){disp_cut = tmp;};
   void set_min_dep_cut(float tmp){min_dep_cut = tmp;};
   void set_max_dep_cut(float tmp){max_dep_cut = tmp;};
-  
+
  private:
+
+  TFile *d_OutputFile;
 
   std::string d_outfilename;
   float zvertex_cut;
@@ -41,7 +46,17 @@ class SimpleTreeSVXCNT : public SubsysReco
   float disp_cut;
   float min_dep_cut;
   float max_dep_cut;
-  
+
+  int d_nevent;
+
+  TH1 *centrality;
+  TH1 *zvertex;
+  TH1 *nsvx;
+  TH1 *ndch;
+
+  TNtuple *ntpedch;
+  TNtuple *ntpesvx;
+
 };
 
 #endif
