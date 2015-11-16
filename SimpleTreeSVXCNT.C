@@ -1,6 +1,5 @@
 #include "TH1.h"
 #include "TH2.h"
-#include "TH3.h"
 #include "TNtuple.h"
 #include <TFile.h>
 
@@ -38,61 +37,18 @@ int d_nevent;
 TH1 *centrality = NULL;
 TH1 *zvertex = NULL;
 
-TH2 *elcut = NULL;
-
-TH3 *eldep = NULL;
-TH3 *elsdep = NULL;
-
-TH3 *eln0 = NULL;
-TH3 *elsn0 = NULL;
-
-// TH3 *elchi2npe0 = NULL;
-// TH3 *elschi2npe0 = NULL;
-
-TH3 *elemcdphimatch = NULL;
-TH3 *elemcdphimatch_e = NULL;
-TH3 *elemcdphimatch_se = NULL;
-
-TH3 *elemcdzmatch = NULL;
-TH3 *elemcdzmatch_e = NULL;
-TH3 *elemcdzmatch_se = NULL;
-
-TH3 *elemcmatch = NULL;
-TH3 *elemcmatch_e = NULL;
-TH3 *elemcmatch_se = NULL;
-
-TH2 *elacceptance = NULL;
-TH2 *elacceptance_e = NULL;
-TH2 *elacceptance_se = NULL;
-TH3 *elep[8];
-// TH3 *elsep[8];
 
 
-TH2 *elmom2 = NULL;
-//TH2 *elep2 =NULL;//for ghost sharing leaving out for now
-TH3 *eldisp = NULL;
-TH3 *elsdisp = NULL;
 
-TH3 *elricht0 = NULL;
-TH3 *elemct0 = NULL;
-TH3 *elsricht0 = NULL;
-TH3 *elsemct0 = NULL;
+
+
+
+
+
+
+
 
 //added for svxcentral tracks
-TH2 *svxchisqndfe = NULL;
-TH2 *svxdcate = NULL;
-TH2 *svxdcale = NULL;
-TH2 *svxdepe = NULL;
-TH2 *svxeope = NULL;
-TH2 *svxn0e = NULL;
-TH2 *svxdispe = NULL;
-TH2 *svxchisqndfw = NULL;
-TH2 *svxdcatw = NULL;
-TH2 *svxdcalw = NULL;
-TH2 *svxdepw = NULL;
-TH2 *svxeopw = NULL;
-TH2 *svxn0w = NULL;
-TH2 *svxdispw = NULL;
 
 TH1 *nsvx = NULL;
 TH1 *ndch = NULL;
@@ -124,7 +80,6 @@ int SimpleTreeSVXCNT::InitRun(PHCompositeNode *topNode)
 
   // Fun4AllServer *se = Fun4AllServer::instance();
   // Fun4AllHistoManager *hm = new Fun4AllHistoManager("hists");
-  // se->registerHistoManager(hm);
   // hm->setOutfileName(d_outfilename.c_str());
   //Fun4AllHistoManager *hm = se->getHistoManager("SimpleTreeSVXCNT");
 
@@ -138,56 +93,16 @@ int SimpleTreeSVXCNT::InitRun(PHCompositeNode *topNode)
 
   ///create and register histograms here
   centrality = new TH1I("centrality","Event Centrality", 100,0,100);
-  //hm->registerHisto(centrality);
   zvertex = new TH1F("zvertex", "Event Z-Vertex Position",100,-50,50);
-  //hm->registerHisto(zvertex);
 
-  elcut = new TH2F("elcut","Electron Cut", 15, -0.5, 14.5, 50, 0, 15);
-  //hm->registerHisto(elcut);
 
   ////x-axis is variable, y-axis is momentum, z-axis is centrality
-  eldep = new TH3F("eldep", "DEP", 200, -10, 10, eID_nPbins, min_mom_cut, max_mom_cut, 100, 0, 100);
-  //hm->registerHisto(eldep);
-  elsdep = new TH3F("elsdep", "DEP(swapped)", 200, -10, 10, eID_nPbins, min_mom_cut, max_mom_cut, 100, 0, 100);
-  //hm->registerHisto(elsdep);
-  eln0 = new TH3F("eln0", "RICH n0 ", 12, -2, 10, eID_nPbins, min_mom_cut, max_mom_cut, 100, 0, 100);
-  //hm->registerHisto(eln0);
-  elsn0 = new TH3F("elsn0", "RICH n0 (swapped)", 12, -2, 10, eID_nPbins, min_mom_cut, max_mom_cut, 100, 0, 100);
-  //hm->registerHisto(elsn0);
-  // elchi2npe0 = new TH3F("elchi2npe0", "chi2/npe0", 200, 0, 30, eID_nPbins, min_mom_cut, max_mom_cut, 100, 0, 100);
-  // hm->registerHisto(elchi2npe0);
-  // elschi2npe0 = new TH3F("elschi2npe0", "schi2/snpe0 (swapped)", 200, 0, 30, eID_nPbins, min_mom_cut, max_mom_cut, 100, 0, 100);
-  // hm->registerHisto(elschi2npe0);
 
-  elemcdphimatch = new TH3F("elemcdphimatch", "EMC dphi matching", 200,-10,10, eID_nPbins, min_mom_cut, max_mom_cut,100,0,100);
-  //hm->registerHisto(elemcdphimatch);
-  elemcdphimatch_e = new TH3F("elemcdphimatch_e", "EMC dphi matching (electron candidate", 200,-10,10, eID_nPbins, min_mom_cut, max_mom_cut,100,0,100);
-  //hm->registerHisto(elemcdphimatch_e);
-  elemcdphimatch_se = new TH3F("elemcdphimatch_se", "EMC dphi matching (swapped electron candidate)", 200,-10,10, eID_nPbins, min_mom_cut, max_mom_cut,100,0,100);
-  //hm->registerHisto(elemcdphimatch_se);
 
-  elemcdzmatch = new TH3F("elemcdzmatch", "EMC dz matching", 200,-10,10, eID_nPbins, min_mom_cut, max_mom_cut,100,0,100);
-  //hm->registerHisto(elemcdzmatch);
-  elemcdzmatch_e = new TH3F("elemcdzmatch_e", "EMC dz matching (electron candidate", 200,-10,10, eID_nPbins, min_mom_cut, max_mom_cut,100,0,100);
-  //hm->registerHisto(elemcdzmatch_e);
-  elemcdzmatch_se = new TH3F("elemcdzmatch_se", "EMC dz matching (swapped electron candidate)", 200,-10,10, eID_nPbins, min_mom_cut, max_mom_cut,100,0,100);
-  //hm->registerHisto(elemcdzmatch_se);
 
   ///elemcmatch: x-axis = dphi, y-axis = dz, z-axis = momentum
-  elemcmatch = new TH3F("elemcmatch", "EMC matching", 200,-10,10,500,-10,10, eID_nPbins, min_mom_cut, max_mom_cut);
-  //hm->registerHisto(elemcmatch);
-  elemcmatch_e = new TH3F("elemcmatch_e", "EMC matching (electron candidate", 200,-10,10,500,-10,10, eID_nPbins, min_mom_cut, max_mom_cut);
-  //hm->registerHisto(elemcmatch_e);
-  elemcmatch_se = new TH3F("elemcmatch_se", "EMC matching (swapped electron candidate)", 200,-10,10,500,-10,10, eID_nPbins, min_mom_cut, max_mom_cut);
-  //hm->registerHisto(elemcmatch_se);
 
 
-  elacceptance = new TH2F("elacceptance", "#phi x #alpha",100, minPhi, maxPhi, 100, minAlpha, maxAlpha);
-  //hm->registerHisto(elacceptance);
-  elacceptance_e = new TH2F("elacceptance_e", "#phi x #alpha",100, minPhi, maxPhi, 100, minAlpha, maxAlpha);
-  //hm->registerHisto(elacceptance_e);
-    elacceptance_se = new TH2F("elacceptance_se", "#phi x #alpha",100, minPhi, maxPhi, 100, minAlpha, maxAlpha);
-  //hm->registerHisto(elacceptance_se);
 
   char name[10], title[40];
   for (int iarm = 0; iarm < 2; iarm++)
@@ -199,72 +114,25 @@ int SimpleTreeSVXCNT::InitRun(PHCompositeNode *topNode)
           sprintf(title, "DEP x p x cent E%d", isector);
         if (iarm == 1)
           sprintf(title, "DEP x p x cent W%d", isector);
-        elep[iarmsect] = new TH3F(name, title, 200, -10, 10, eID_nPbins, min_mom_cut, max_mom_cut,100,0,100);
-	//hm->registerHisto(elep[iarmsect]);
 
       }
 
 
-  eldisp = new TH3F("eldisp", "RICH ring displacement", 40, 0, 10, eID_nPbins, min_mom_cut, max_mom_cut,100,0,100);
-  //hm->registerHisto(eldisp);
-  elsdisp = new TH3F("elsdisp", "RICH shared ring displacement", 40, 0, 10, eID_nPbins, min_mom_cut, max_mom_cut,100,0,100);
-  //hm->registerHisto(elsdisp);
-  //elep2 = new TH2F("elep2", "#frac{E}{P}", 100, -5, 5,10,0,100);
-  //hm->registerHisto(elep2);
-  elmom2 = new TH2F("elmom2", "Electron momentum", 100, 0, 5,100,0,100);
-  //hm->registerHisto(elmom2);
-  elricht0 = new TH3F("elricht0", "RICH T0 (eID)", 100, -5, 5, eID_nPbins, min_mom_cut, max_mom_cut,100,0,100);
-  //hm->registerHisto(elricht0);
-  elsricht0 = new TH3F("elsricht0", "RICH T0 (swapped eID)", 100, -5, 5, eID_nPbins, min_mom_cut, max_mom_cut,100,0,100);
-  //hm->registerHisto(elsricht0);
-  elemct0 = new TH3F("elemct0", "EmCal T0 (eID)", 100, -40, 40, eID_nPbins, min_mom_cut, max_mom_cut,100,0,100);
-  //hm->registerHisto(elemct0);
-  elsemct0 = new TH3F("elsemct0", "EmCal T0 (swapped eID)", 100, -40, 40, eID_nPbins, min_mom_cut, max_mom_cut,100,0,100);
-  //hm->registerHisto(elsemct0);
 
 
   //added for loop over svxcentraltracks
   int nptbins = 20;
   int ptlowedge = 0;
   int pthighedge = 10;
-  svxchisqndfe = new TH2F("svxchisqndfe","chisq/ndf",100,0,10,nptbins,ptlowedge,pthighedge);
-  //hm->registerHisto(svxchisqndfe);
-  svxchisqndfw = new TH2F("svxchisqndfw","chisq/ndf",100,0,10,nptbins,ptlowedge,pthighedge);
-  //hm->registerHisto(svxchisqndfw);
 
-  svxdcate = new TH2F("svxdcate","dcat",400,-0.4,0.4,nptbins,ptlowedge,pthighedge);
-  //hm->registerHisto(svxdcate);
-  svxdcatw = new TH2F("svxdcatw","dcat",400,-0.4,0.4,nptbins,ptlowedge,pthighedge);
-  //hm->registerHisto(svxdcatw);
 
-  svxdcale = new TH2F("svxdcale","dcal",400,-0.4,0.4,nptbins,ptlowedge,pthighedge);
-  //hm->registerHisto(svxdcale);
-  svxdcalw = new TH2F("svxdcalw","dcal",400,-0.4,0.4,nptbins,ptlowedge,pthighedge);
-  //hm->registerHisto(svxdcalw);
 
-  svxdepe = new TH2F("svxdepe","dep",200,-5,5,nptbins,ptlowedge,pthighedge);
-  //hm->registerHisto(svxdepe);
-  svxdepw = new TH2F("svxdepw","dep",200,-5,5,nptbins,ptlowedge,pthighedge);
-  //hm->registerHisto(svxdepw);
 
-  svxeope = new TH2F("svxeope","E/mom",200,0,5,nptbins,ptlowedge,pthighedge);
-  //hm->registerHisto(svxeope);
-  svxeopw = new TH2F("svxeopw","E/mom",200,0,5,nptbins,ptlowedge,pthighedge);
-  //hm->registerHisto(svxeopw);
 
-  svxn0e = new TH2F("svxn0e","n0",200,-5,5,nptbins,ptlowedge,pthighedge);
-  //hm->registerHisto(svxn0e);
-  svxn0w = new TH2F("svxn0w","n0",200,-5,5,nptbins,ptlowedge,pthighedge);
-  //hm->registerHisto(svxn0w);
 
-  svxdispe = new TH2F("svxdispe","n0",200,-10,10,nptbins,ptlowedge,pthighedge);
-  //hm->registerHisto(svxdispe);
-  svxdispw = new TH2F("svxdispw","n0",200,-10,10,nptbins,ptlowedge,pthighedge);
-  //hm->registerHisto(svxdispw);
 
 
   nsvx = new TH1F("nsvx",";number of svx trks per evnt;",30,0,10);
-  //hm->registerHisto(nsvx);
   ndch = new TH1F("ndch",";number of dch trks per evnt;",60,0,20);
 
 
