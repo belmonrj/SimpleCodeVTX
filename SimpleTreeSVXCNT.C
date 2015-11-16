@@ -39,15 +39,6 @@ TH1 *zvertex = NULL;
 
 
 
-
-
-
-
-
-
-
-
-
 //added for svxcentral tracks
 
 TH1 *nsvx = NULL;
@@ -120,10 +111,9 @@ int SimpleTreeSVXCNT::InitRun(PHCompositeNode *topNode)
 
 
 
-  //added for loop over svxcentraltracks
-  int nptbins = 20;
-  int ptlowedge = 0;
-  int pthighedge = 10;
+  // int nptbins = 20;
+  // int ptlowedge = 0;
+  // int pthighedge = 10;
 
 
 
@@ -220,16 +210,17 @@ int SimpleTreeSVXCNT::process_event(PHCompositeNode *topNode)
       int dcarm = trk->get_dcarm(i);
       int sect = trk->get_sect(i);
       int iarmsect = dcarm * 4 + sect;
+      if(iarmsect<0) cout << "Houston, we have a problem" << endl;
 
       //float E = trk->get_ecore(i);
       //float dep = E/mom-1;
       float dep = trk->get_dep(i);
 
-      bool epcut = (dep > min_dep_cut && dep < max_dep_cut);
+      //bool epcut = (dep > min_dep_cut && dep < max_dep_cut);
 
       float emcdphi = trk->get_emcsdphi_e(i);
       float emcdz = trk->get_emcsdz_e(i);
-      bool emcmatchcut = (fabs(emcdphi)<emcdphi_cut && fabs(emcdz)<emcdz_cut);
+      //bool emcmatchcut = (fabs(emcdphi)<emcdphi_cut && fabs(emcdz)<emcdz_cut);
       float zvtx   =  (vtxout->get_Vertex()).getZ();
 
       ntpdch[0] = mom;
@@ -253,9 +244,9 @@ int SimpleTreeSVXCNT::process_event(PHCompositeNode *topNode)
       if(mom < min_mom_cut || mom > max_mom_cut) continue;
 
       
-      float emc_t0 = trk->get_temc(i);
-      float crk_t0 = trk->get_tcrk(i);
-      float scrk_t0 = trk->get_stcrk(i);
+      // float emc_t0 = trk->get_temc(i);
+      // float crk_t0 = trk->get_tcrk(i);
+      // float scrk_t0 = trk->get_stcrk(i);
      
     }
    if ((trigbitscaled&0x00000010) == 16)
