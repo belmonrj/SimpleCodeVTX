@@ -1,12 +1,12 @@
  AUTOMAKE_OPTIONS = foreign
 
- INCLUDES = -I$(includedir) -I$(OFFLINE_MAIN)/include -I$(ROOTSYS)/include 
+ INCLUDES = -I$(includedir) -I$(OFFLINE_MAIN)/include -I$(ROOTSYS)/include -Wno-error
 
  lib_LTLIBRARIES = libSimpleTreeSVXCNT.la
 
 noinst_HEADERS = \
    SimpleTreeSVXCNTLinkDef.h
- 
+
  include_HEADERS = \
    SimpleTreeSVXCNT.h
 
@@ -21,7 +21,7 @@ noinst_HEADERS = \
  libSimpleTreeSVXCNT_la_SOURCES = \
    SimpleTreeSVXCNT.C \
    SimpleTreeSVXCNT_Dict.C
- 
+
  BUILT_SOURCES = \
    testexternals.C
 
