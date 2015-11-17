@@ -49,10 +49,16 @@ class SimpleTreeSVXCNT : public SubsysReco
 
   int d_nevent;
 
-  TH1 *centrality;
-  TH1 *zvertex;
-  TH1 *nsvx;
-  TH1 *ndch;
+  // --- conversion from base class to derived class allowed
+  // --- but should consider being explicit here...
+  TH1 *th1f_cent;
+  TH1 *th1f_vtxz;
+  TH1 *th1f_bbcz;
+  TH1 *th1f_nsvx;
+  TH1 *th1f_ndch;
+  TH1 *th1f_bbcsq;
+  TH1 *th1f_bbcnq;
+
 
   TNtuple *ntpedch;
   TNtuple *ntpesvx;
