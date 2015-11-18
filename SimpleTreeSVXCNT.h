@@ -84,30 +84,6 @@ class SimpleTreeSVXCNT : public SubsysReco
   float d_mom[maxn];
   float d_pT[maxn];
 
-  //pc
-  float d_ppc1x[maxn];
-  float d_ppc1y[maxn];
-  float d_ppc1z[maxn];
-  float d_ppc1phi[maxn];
-  float d_ppc2x[maxn];
-  float d_ppc2y[maxn];
-  float d_pc2z[maxn];
-  float d_pc2phi[maxn];
-  float d_pc2dz[maxn];
-  float d_pc2dphi[maxn];
-  float d_pc2sdz[maxn];
-  float d_pc2sdphi[maxn];
-  float d_ppc2z[maxn];
-  float d_ppc3x[maxn];
-  float d_ppc3y[maxn];
-  float d_ppc3z[maxn];
-  float d_pc3z[maxn];
-  float d_pc3phi[maxn];
-  float d_pc3dz[maxn];
-  float d_pc3dphi[maxn];
-  float d_pc3sdz[maxn];
-  float d_pc3sdphi[maxn];
-
   //emc
   int d_deadmap[maxn];
   int d_warnmap[maxn];
@@ -132,11 +108,8 @@ class SimpleTreeSVXCNT : public SubsysReco
   //rich
   float d_disp[maxn];
   int d_n0[maxn];
-  int d_n1[maxn];
-  int d_n2[maxn];
   float d_npe0[maxn];
-  float d_npe1[maxn];
-  float d_npe2[maxn];
+  float d_crkchi2[maxn];
 
   // --- svxcnt
   int d_idch[maxn];
