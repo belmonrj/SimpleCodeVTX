@@ -2,13 +2,15 @@
 #include <cmath>
 #include <string>
 
-#include "TH1.h"
 #include "TFile.h"
+#include "TTree.h"
+#include "TH1.h"
 
 #include "SimpleTreeSVXCNT.h"
 
 #include "getClass.h"
 #include "Fun4AllReturnCodes.h"
+#include "RunHeader.h"
 #include "PHGlobal.h"
 #include "VtxOut.h"
 #include "PHPoint.h" // needed for VtxOut.h ...
@@ -31,29 +33,159 @@ using namespace std;
 
 
 
-int SimpleTreeSVXCNT::InitRun(PHCompositeNode *topNode)
+int SimpleTreeSVXCNT::Init(PHCompositeNode *topNode)
 {
 
   d_nevent = 0;
 
-  zvertex_cut = 10;
-  //  emcmatch_cut = 3;
-  min_mom_cut = 0.5;
-  max_mom_cut = 15;
-  emcdz_cut = 5;
-  emcdphi_cut = 5;
-
-  n0_cut = 1;
-  // chi2npe0_cut = 50;
-  disp_cut = 10;
-  min_dep_cut = -10;
-  max_dep_cut = 10;
-  // pfoa_cut = 2.5; //in degrees
-  // deltaZ_cut = 1.0;
-  // deltaPhi_cut = 0.1;
-
-
   d_OutputFile = new TFile(d_outfilename.c_str(),"RECREATE");
+
+
+  // --- tree
+  tree_cnt = new TTree("tree_cnt","tree_cnt");
+  // --- basic stuff
+  tree_cnt->Branch("runn",&d_runn,"runn/I");
+  tree_cnt->Branch("cent",&d_cent,"cent/S");
+  tree_cnt->Branch("bbcz",&d_bbcz,"bbcz/F");
+  tree_cnt->Branch("ntrk",&d_ntrk,"ntrk/I");
+  tree_cnt->Branch("phi0",d_phi0,"phi0[ntrk]/F");
+  tree_cnt->Branch("the0",d_the0,"the0[ntrk]/F");
+  tree_cnt->Branch("quality",d_quality,"quality[ntrk]/S");
+  tree_cnt->Branch("charge",d_charge,"charge[ntrk]/S");
+  tree_cnt->Branch("dcarm",d_dcarm,"dcarm[ntrk]/S");
+  tree_cnt->Branch("alpha",d_alpha,"alpha[ntrk]/F");
+  tree_cnt->Branch("phi",d_phi,"phi[ntrk]/F");
+  tree_cnt->Branch("zed",d_zed,"zed[ntrk]/F");
+  tree_cnt->Branch("mom",d_mom,"mom[ntrk]/F");
+  tree_cnt->Branch("pT",d_pT,"pT[ntrk]/F");
+  // --- pc
+  tree_cnt->Branch("ppc1x",d_ppc1x,"ppc1x[ntrk]/F");
+  tree_cnt->Branch("ppc1y",d_ppc1y,"ppc1y[ntrk]/F");
+  tree_cnt->Branch("ppc1z",d_ppc1z,"ppc1z[ntrk]/F");
+  tree_cnt->Branch("ppc1phi",d_ppc1phi,"ppc1phi[ntrk]/F");
+  tree_cnt->Branch("ppc2x",d_ppc2x,"ppc2x[ntrk]/F");
+  tree_cnt->Branch("ppc2y",d_ppc2y,"ppc2y[ntrk]/F");
+  tree_cnt->Branch("ppc2z",d_ppc2z,"ppc2z[ntrk]/F");
+  tree_cnt->Branch("pc2z",d_pc2z,"pc2z[ntrk]/F");
+  tree_cnt->Branch("pc2phi",d_pc2phi,"pc2phi[ntrk]/F");
+  tree_cnt->Branch("pc2dz",d_pc2dz,"pc2dz[ntrk]/F");
+  tree_cnt->Branch("pc2dphi",d_pc2dphi,"pc2dphi[ntrk]/F");
+  tree_cnt->Branch("pc2sdz",d_pc2sdz,"pc2sdz[ntrk]/F");
+  tree_cnt->Branch("pc2sdphi",d_pc2sdphi,"pc2sdphi[ntrk]/F");
+  tree_cnt->Branch("ppc3x",d_ppc3x,"ppc3x[ntrk]/F");
+  tree_cnt->Branch("ppc3y",d_ppc3y,"ppc3y[ntrk]/F");
+  tree_cnt->Branch("ppc3z",d_ppc3z,"ppc3z[ntrk]/F");
+  tree_cnt->Branch("pc3z",d_pc3z,"pc3z[ntrk]/F");
+  tree_cnt->Branch("pc3phi",d_pc3phi,"pc3phi[ntrk]/F");
+  tree_cnt->Branch("pc3dz",d_pc3dz,"pc3dz[ntrk]/F");
+  tree_cnt->Branch("pc3dphi",d_pc3dphi,"pc3dphi[ntrk]/F");
+  tree_cnt->Branch("pc3sdz",d_pc3sdz,"pc3sdz[ntrk]/F");
+  tree_cnt->Branch("pc3sdphi",d_pc3sdphi,"pc3sdphi[ntrk]/F");
+  // --- emc
+  tree_cnt->Branch("deadmap",d_deadmap,"deadmap[ntrk]/I");
+  tree_cnt->Branch("warnmap",d_warnmap,"warnmap[ntrk]/I");
+  tree_cnt->Branch("pemcx",d_pemcx,"pemcx[ntrk]/F");
+  tree_cnt->Branch("pemcy",d_pemcy,"pemcy[ntrk]/F");
+  tree_cnt->Branch("pemcz",d_pemcz,"pemcz[ntrk]/F");
+  tree_cnt->Branch("emcz",d_emcz,"emcz[ntrk]/F");
+  tree_cnt->Branch("emcphi",d_emcdphi,"emcphi[ntrk]/F");
+  tree_cnt->Branch("emcdz",d_emcdz,"emcdz[ntrk]/F");
+  tree_cnt->Branch("emcdphi",d_emcdphi,"emcdphi[ntrk]/F");
+  tree_cnt->Branch("emcsdz",d_emcsdz,"emcsdz[ntrk]/F");
+  tree_cnt->Branch("emcsdphi",d_emcsdphi,"emcsdphi[ntrk]/F");
+  tree_cnt->Branch("ecent",d_ecent,"ecent[ntrk]/F");
+  tree_cnt->Branch("ecore",d_ecore,"ecore[ntrk]/F");
+  tree_cnt->Branch("emce",d_emce,"emce[ntrk]/F");
+  tree_cnt->Branch("prob",d_prob,"prob[ntrk]/F");
+  tree_cnt->Branch("emcchi2",d_emcchi2,"emcchi2[ntrk]/F");
+  tree_cnt->Branch("sect",d_sect,"sect[ntrk]/F");
+  tree_cnt->Branch("ysect",d_ysect,"ysect[ntrk]/F");
+  tree_cnt->Branch("zsect",d_zsect,"zsect[ntrk]/F");
+  // --- rich
+  tree_cnt->Branch("disp",d_disp,"disp[ntrk]/S");
+  tree_cnt->Branch("n0",d_n0,"n0[ntrk]/S");
+  tree_cnt->Branch("n1",d_n1,"n1[ntrk]/S");
+  tree_cnt->Branch("n2",d_n2,"n2[ntrk]/S");
+  tree_cnt->Branch("npe0",d_npe0,"npe0[ntrk]/F");
+  tree_cnt->Branch("npe1",d_npe1,"npe1[ntrk]/F");
+  tree_cnt->Branch("npe2",d_npe2,"npe2[ntrk]/F");
+
+
+  // --- tree
+  tree_svxcnt = new TTree("tree_svxcnt","tree_svxcnt");
+  // --- basic stuff
+  tree_svxcnt->Branch("runn",&d_runn,"runn/I");
+  tree_svxcnt->Branch("cent",&d_cent,"cent/S");
+  tree_svxcnt->Branch("bbcz",&d_bbcz,"bbcz/F");
+  tree_svxcnt->Branch("ntrk",&d_ntrk,"ntrk/I");
+  tree_svxcnt->Branch("phi0",d_phi0,"phi0[ntrk]/F");
+  tree_svxcnt->Branch("the0",d_the0,"the0[ntrk]/F");
+  tree_svxcnt->Branch("quality",d_quality,"quality[ntrk]/S");
+  tree_svxcnt->Branch("charge",d_charge,"charge[ntrk]/S");
+  tree_svxcnt->Branch("dcarm",d_dcarm,"dcarm[ntrk]/S");
+  tree_svxcnt->Branch("alpha",d_alpha,"alpha[ntrk]/F");
+  tree_svxcnt->Branch("phi",d_phi,"phi[ntrk]/F");
+  tree_svxcnt->Branch("zed",d_zed,"zed[ntrk]/F");
+  tree_svxcnt->Branch("mom",d_mom,"mom[ntrk]/F");
+  tree_svxcnt->Branch("pT",d_pT,"pT[ntrk]/F");
+  // ---
+  tree_svxcnt->Branch("idch",d_idch,"idch[ntrk]/F");
+  tree_svxcnt->Branch("chi2",d_chi2,"chi2[ntrk]/F");
+  tree_svxcnt->Branch("ndf",d_ndf,"ndf[ntrk]/F");
+  tree_svxcnt->Branch("dcat",d_dcat,"dcat[ntrk]/F");
+  tree_svxcnt->Branch("dcal",d_dcal,"dcal[ntrk]/F");
+  // --- pc
+  tree_svxcnt->Branch("ppc1x",d_ppc1x,"ppc1x[ntrk]/F");
+  tree_svxcnt->Branch("ppc1y",d_ppc1y,"ppc1y[ntrk]/F");
+  tree_svxcnt->Branch("ppc1z",d_ppc1z,"ppc1z[ntrk]/F");
+  tree_svxcnt->Branch("ppc1phi",d_ppc1phi,"ppc1phi[ntrk]/F");
+  tree_svxcnt->Branch("ppc2x",d_ppc2x,"ppc2x[ntrk]/F");
+  tree_svxcnt->Branch("ppc2y",d_ppc2y,"ppc2y[ntrk]/F");
+  tree_svxcnt->Branch("ppc2z",d_ppc2z,"ppc2z[ntrk]/F");
+  tree_svxcnt->Branch("pc2z",d_pc2z,"pc2z[ntrk]/F");
+  tree_svxcnt->Branch("pc2phi",d_pc2phi,"pc2phi[ntrk]/F");
+  tree_svxcnt->Branch("pc2dz",d_pc2dz,"pc2dz[ntrk]/F");
+  tree_svxcnt->Branch("pc2dphi",d_pc2dphi,"pc2dphi[ntrk]/F");
+  tree_svxcnt->Branch("pc2sdz",d_pc2sdz,"pc2sdz[ntrk]/F");
+  tree_svxcnt->Branch("pc2sdphi",d_pc2sdphi,"pc2sdphi[ntrk]/F");
+  tree_svxcnt->Branch("ppc3x",d_ppc3x,"ppc3x[ntrk]/F");
+  tree_svxcnt->Branch("ppc3y",d_ppc3y,"ppc3y[ntrk]/F");
+  tree_svxcnt->Branch("ppc3z",d_ppc3z,"ppc3z[ntrk]/F");
+  tree_svxcnt->Branch("pc3z",d_pc3z,"pc3z[ntrk]/F");
+  tree_svxcnt->Branch("pc3phi",d_pc3phi,"pc3phi[ntrk]/F");
+  tree_svxcnt->Branch("pc3dz",d_pc3dz,"pc3dz[ntrk]/F");
+  tree_svxcnt->Branch("pc3dphi",d_pc3dphi,"pc3dphi[ntrk]/F");
+  tree_svxcnt->Branch("pc3sdz",d_pc3sdz,"pc3sdz[ntrk]/F");
+  tree_svxcnt->Branch("pc3sdphi",d_pc3sdphi,"pc3sdphi[ntrk]/F");
+  // --- emc
+  tree_svxcnt->Branch("deadmap",d_deadmap,"deadmap[ntrk]/I");
+  tree_svxcnt->Branch("warnmap",d_warnmap,"warnmap[ntrk]/I");
+  tree_svxcnt->Branch("pemcx",d_pemcx,"pemcx[ntrk]/F");
+  tree_svxcnt->Branch("pemcy",d_pemcy,"pemcy[ntrk]/F");
+  tree_svxcnt->Branch("pemcz",d_pemcz,"pemcz[ntrk]/F");
+  tree_svxcnt->Branch("emcz",d_emcz,"emcz[ntrk]/F");
+  tree_svxcnt->Branch("emcphi",d_emcdphi,"emcphi[ntrk]/F");
+  tree_svxcnt->Branch("emcdz",d_emcdz,"emcdz[ntrk]/F");
+  tree_svxcnt->Branch("emcdphi",d_emcdphi,"emcdphi[ntrk]/F");
+  tree_svxcnt->Branch("emcsdz",d_emcsdz,"emcsdz[ntrk]/F");
+  tree_svxcnt->Branch("emcsdphi",d_emcsdphi,"emcsdphi[ntrk]/F");
+  tree_svxcnt->Branch("ecent",d_ecent,"ecent[ntrk]/F");
+  tree_svxcnt->Branch("ecore",d_ecore,"ecore[ntrk]/F");
+  tree_svxcnt->Branch("emce",d_emce,"emce[ntrk]/F");
+  tree_svxcnt->Branch("prob",d_prob,"prob[ntrk]/F");
+  tree_svxcnt->Branch("emcchi2",d_emcchi2,"emcchi2[ntrk]/F");
+  tree_svxcnt->Branch("sect",d_sect,"sect[ntrk]/F");
+  tree_svxcnt->Branch("ysect",d_ysect,"ysect[ntrk]/F");
+  tree_svxcnt->Branch("zsect",d_zsect,"zsect[ntrk]/F");
+  // --- rich
+  tree_svxcnt->Branch("disp",d_disp,"disp[ntrk]/S");
+  tree_svxcnt->Branch("n0",d_n0,"n0[ntrk]/S");
+  tree_svxcnt->Branch("n1",d_n1,"n1[ntrk]/S");
+  tree_svxcnt->Branch("n2",d_n2,"n2[ntrk]/S");
+  tree_svxcnt->Branch("npe0",d_npe0,"npe0[ntrk]/F");
+  tree_svxcnt->Branch("npe1",d_npe1,"npe1[ntrk]/F");
+  tree_svxcnt->Branch("npe2",d_npe2,"npe2[ntrk]/F");
+
 
   // --- create and register histograms here
   th1f_cent = new TH1I("th1f_cent","", 100,0,100);
@@ -63,26 +195,25 @@ int SimpleTreeSVXCNT::InitRun(PHCompositeNode *topNode)
   th1f_bbcsq = new TH1F("th1f_bbcsq","",3000,0,3000);
   th1f_bbcnq = new TH1F("th1f_bbcnq","",3000,0,3000);
 
-  // x-axis is variable, y-axis is momentum, z-axis is centrality
-  // elemcmatch: x-axis = dphi, y-axis = dz, z-axis = momentum
-
-  char name[10], title[40];
-  for (int iarm = 0; iarm < 2; iarm++)
-    for (int isector = 0; isector < 4; isector++)
-      {
-        int iarmsect = iarm * 4 + isector;
-        sprintf(name, "elep_%d", iarmsect);
-        if (iarm == 0)
-          sprintf(title, "DEP x p x cent E%d", isector);
-        if (iarm == 1)
-          sprintf(title, "DEP x p x cent W%d", isector);
-      }
-
   th1f_nsvx = new TH1F("th1f_nsvx","",20,0,20);
   th1f_ndch = new TH1F("th1f_ndch","",20,0,20);
 
   return 0;
 
+}
+
+
+
+int SimpleTreeSVXCNT::InitRun(PHCompositeNode *topNode)
+{
+  RunHeader *runhdr = findNode::getClass<RunHeader>(topNode,"RunHeader");
+  if(!runhdr)
+    {
+      cout<<"RunHeader class not in Node Tree"<<endl;
+      return 0;
+    }
+  d_runn = runhdr->get_RunNumber();
+  return 0;
 }
 
 
@@ -119,7 +250,7 @@ int SimpleTreeSVXCNT::process_event(PHCompositeNode *topNode)
       return DISCARDEVENT;
     }
   int trigbitscaled = lvl1->get_lvl1_trigscaled();
-  int trigbitraw = lvl1->get_lvl1_trigraw();
+  //int trigbitraw = lvl1->get_lvl1_trigraw();
 
 
   // --- get the VtxOut node
@@ -136,8 +267,8 @@ int SimpleTreeSVXCNT::process_event(PHCompositeNode *topNode)
 
 
   // --- get the PHCentralTrack node
-  PHCentralTrack *trk = findNode::getClass<PHCentralTrack>(topNode, "PHCentralTrack");
-  if ( trk == NULL )
+  PHCentralTrack *node_cnt = findNode::getClass<PHCentralTrack>(topNode, "PHCentralTrack");
+  if ( node_cnt == NULL )
     {
       cerr << PHWHERE << "ERROR: can't find PHCentralTrack node, discarding event" << endl;
       return DISCARDEVENT;
@@ -145,8 +276,8 @@ int SimpleTreeSVXCNT::process_event(PHCompositeNode *topNode)
 
 
   // --- get the SvxCentralTrackList node
-  SvxCentralTrackList *svxcnttrklist = findNode::getClass<SvxCentralTrackList>(topNode,"SvxCentralTrackList");
-  if(!svxcnttrklist)
+  SvxCentralTrackList *node_svxcnt = findNode::getClass<SvxCentralTrackList>(topNode,"SvxCentralTrackList");
+  if(!node_svxcnt)
     {
       cerr << PHWHERE << " ERROR: can't find SVXcentralTrack, discarding event " << endl;
       return DISCARDEVENT;
@@ -154,52 +285,89 @@ int SimpleTreeSVXCNT::process_event(PHCompositeNode *topNode)
 
 
   // --- loop over Central Tracks
+  int ntrk = 0;
   int numberdchtrks = 0;
-  for (unsigned int i=0; i<trk->get_npart();i++)
+  for ( unsigned int itrk = 0; itrk < node_cnt->get_npart(); itrk++)
     {
 
-      float mom = trk->get_mom(i);
-      float dchpx = trk->get_px(i);
-      float dchpy = trk->get_py(i);
-      float pt = sqrt(dchpx*dchpx+dchpy*dchpy);
-      float emce = trk->get_emce(i);
-      if (pt > 0.1 && pt < 4) numberdchtrks++;
-      int quality = trk->get_quality(i);
-      if(quality != 31 && quality != 63) continue;
+      // global position
+      d_phi0[ntrk] = node_cnt->get_phi0(itrk);
+      d_the0[ntrk] = node_cnt->get_the0(itrk);
 
-      float phi = trk->get_phi(i);
-      float alpha = trk->get_alpha(i);
+      // dc
+      d_quality[ntrk] = node_cnt->get_quality(itrk);
+      d_charge[ntrk] = node_cnt->get_charge(itrk);
+      d_dcarm[ntrk] = node_cnt->get_dcarm(itrk);
+      d_alpha[ntrk] = node_cnt->get_alpha(itrk);
+      d_phi[ntrk] = node_cnt->get_phi(itrk);
+      d_zed[ntrk] = node_cnt->get_zed(itrk);
+      d_mom[ntrk] = node_cnt->get_mom(itrk);
+      d_pT[ntrk] = node_cnt->get_mom(itrk)*sin(node_cnt->get_the0(itrk));
 
-      int n0 = trk->get_n0(i);
-      int sn0 = trk->get_sn0(i);
+      // pc
+      d_ppc1x[ntrk] = node_cnt->get_ppc1x(itrk);
+      d_ppc1y[ntrk] = node_cnt->get_ppc1y(itrk);
+      d_ppc1z[ntrk] = node_cnt->get_ppc1z(itrk);
+      d_ppc1phi[ntrk] = atan2(node_cnt->get_ppc1y(itrk),node_cnt->get_ppc1x(itrk));
+      d_ppc2x[ntrk] = node_cnt->get_ppc2x(itrk);
+      d_ppc2y[ntrk] = node_cnt->get_ppc2y(itrk);
+      d_ppc2z[ntrk] = node_cnt->get_ppc2z(itrk);
+      d_pc2z[ntrk] = node_cnt->get_ppc2z(itrk) - node_cnt->get_pc2dz(itrk);
+      d_pc2phi[ntrk] = atan2(node_cnt->get_ppc2y(itrk),node_cnt->get_ppc2x(itrk)) - node_cnt->get_pc2dphi(itrk);
+      d_pc2dz[ntrk] = node_cnt->get_pc2dz(itrk);
+      d_pc2dphi[ntrk] = node_cnt->get_pc2dphi(itrk);
+      d_pc2sdz[ntrk] = node_cnt->get_pc2sdz(itrk);
+      d_pc2sdphi[ntrk] = node_cnt->get_pc2sdphi(itrk);
+      d_ppc3x[ntrk] = node_cnt->get_ppc3x(itrk);
+      d_ppc3y[ntrk] = node_cnt->get_ppc3y(itrk);
+      d_ppc3z[ntrk] = node_cnt->get_ppc3z(itrk);
+      d_pc3z[ntrk] = node_cnt->get_ppc3z(itrk) - node_cnt->get_pc3dz(itrk);
+      d_pc3phi[ntrk] = atan2(node_cnt->get_ppc3y(itrk),node_cnt->get_ppc3x(itrk)) - node_cnt->get_pc3dphi(itrk);
+      d_pc3dz[ntrk] = node_cnt->get_pc3dz(itrk);
+      d_pc3dphi[ntrk] = node_cnt->get_pc3dphi(itrk);
+      d_pc3sdz[ntrk] = node_cnt->get_pc3sdz(itrk);
+      d_pc3sdphi[ntrk] = node_cnt->get_pc3sdphi(itrk);
 
-      float disp = trk->get_disp(i);
-      float sdisp = trk->get_sdisp(i);
-      int dcarm = trk->get_dcarm(i);
-      int sect = trk->get_sect(i);
-      int iarmsect = dcarm * 4 + sect;
-      int verbosity = 0;
-      if(iarmsect<0&&verbosity>1) cout << "Houston, we have a problem" << endl;
+      // emc
+      d_deadmap[ntrk] = node_cnt->get_deadmap(itrk);
+      d_warnmap[ntrk] = node_cnt->get_warnmap(itrk);
+      d_pemcx[ntrk] = node_cnt->get_pemcx(itrk);
+      d_pemcy[ntrk] = node_cnt->get_pemcy(itrk);
+      d_pemcz[ntrk] = node_cnt->get_pemcz(itrk);
+      d_emcz[ntrk] = node_cnt->get_pemcz(itrk) - node_cnt->get_emcdz(itrk);
+      d_emcphi[ntrk] = atan2(node_cnt->get_pemcy(itrk),node_cnt->get_pemcx(itrk)) - node_cnt->get_emcdphi(itrk);
+      d_emcdz[ntrk] = node_cnt->get_emcdz(itrk);
+      d_emcdphi[ntrk] = node_cnt->get_emcdphi(itrk);
+      d_emcsdz[ntrk] = node_cnt->get_emcsdz(itrk);
+      d_emcsdphi[ntrk] = node_cnt->get_emcsdphi(itrk);
+      d_ecore[ntrk] = node_cnt->get_ecore(itrk);
+      d_ecent[ntrk] = node_cnt->get_ecent(itrk);
+      d_emce[ntrk] = node_cnt->get_emce(itrk);
+      d_prob[ntrk] = node_cnt->get_prob(itrk);
+      d_emcchi2[ntrk] = node_cnt->get_emcchi2(itrk);
+      d_sect[ntrk] = node_cnt->get_sect(itrk);
+      d_ysect[ntrk] = node_cnt->get_ysect(itrk);
+      d_zsect[ntrk] = node_cnt->get_zsect(itrk);
 
-      //float E = trk->get_ecore(i);
-      //float dep = E/mom-1;
-      float dep = trk->get_dep(i);
+      // rich
+      d_disp[ntrk] = node_cnt->get_disp(itrk);
+      d_n0[ntrk] = node_cnt->get_n0(itrk);
+      d_n1[ntrk] = node_cnt->get_n1(itrk);
+      d_n2[ntrk] = node_cnt->get_n2(itrk);
+      d_npe0[ntrk] = node_cnt->get_npe0(itrk);
+      d_npe1[ntrk] = node_cnt->get_npe1(itrk);
+      d_npe2[ntrk] = node_cnt->get_npe2(itrk);
 
-      //bool epcut = (dep > min_dep_cut && dep < max_dep_cut);
-
-      float emcdphi = trk->get_emcsdphi_e(i);
-      float emcdz = trk->get_emcsdz_e(i);
-      //bool emcmatchcut = (fabs(emcdphi)<emcdphi_cut && fabs(emcdz)<emcdz_cut);
-      float zvtx   =  (vtxout->get_Vertex()).getZ();
-
-
-      if(mom < min_mom_cut || mom > max_mom_cut) continue;
-
-      // float emc_t0 = trk->get_temc(i);
-      // float crk_t0 = trk->get_tcrk(i);
-      // float scrk_t0 = trk->get_stcrk(i);
+      // --- if all track cuts passed, increment counter
+      ntrk++;
 
     } // loop over Central Tracks
+
+  d_ntrk = ntrk; // assign tree variable of number of tracks to counted variable
+  if ( ntrk == 0 ) return DISCARDEVENT;
+  tree_cnt->Fill();
+
+
 
   // --- trigger selection
   if ((trigbitscaled&0x00000010) == 16)
@@ -208,43 +376,101 @@ int SimpleTreeSVXCNT::process_event(PHCompositeNode *topNode)
     }
 
 
-
-  int nsvxtrks = 0;
-  for (int i=0; i<svxcnttrklist->get_nCentralTracks();i++)
+  ntrk = 0;
+  int numbersvxtrks = 0;
+  for ( int i = 0; i < node_svxcnt->get_nCentralTracks(); i++ )
     {
 
-      SvxCentralTrack *svxcntrltrk = svxcnttrklist->getCentralTrack(i);
+      SvxCentralTrack *sngl_svxcnt = node_svxcnt->getCentralTrack(i);
 
-      if (!svxcntrltrk) {cout << " no central track" << endl; continue;}
-
-      int dchindex = svxcntrltrk->getDchIndex();
-      float nhit = svxcntrltrk->getNhits();
+      if (!sngl_svxcnt) {cout << " no central track" << endl; continue;}
+      float nhit = sngl_svxcnt->getNhits();
       if ( nhit <= 2 ) continue; // require 3 hit tracks...?
 
-      float chisq = svxcntrltrk->getChiSquare();
-      float ndf = svxcntrltrk->getNDF();
-      float dcat = svxcntrltrk->getDCA2D();
-      float dcal = svxcntrltrk->getDCAZ();
-      float dchpx = trk->get_px(dchindex);
-      float dchpy = trk->get_py(dchindex);
-      float pt = sqrt(dchpx*dchpx+dchpy*dchpy);
-      float disp = trk->get_disp(dchindex);
-      float sdisp = trk->get_sdisp(dchindex);
-      float dep = trk->get_dep(dchindex);
-      float emce = trk->get_emce(dchindex);
-      float mom = trk->get_mom(dchindex);
-      float n0 = trk->get_n0(dchindex);
-      float emcdphi = trk->get_emcsdphi_e(dchindex);
-      float emcdz = trk->get_emcsdz_e(dchindex);
-      float sn0 = trk->get_sn0(dchindex);
-      float dchquality = trk->get_quality(dchindex);
-      float phi0 = trk->get_phi0(dchindex);
-      float zvtx   =  (vtxout->get_Vertex()).getZ();
-      if (dchquality != 31 && dchquality != 63) {continue;}
+      int idch = sngl_svxcnt->getDchIndex();
 
-      if ( pt > 0.1 && pt < 4 ) nsvxtrks++;
+      d_idch[ntrk] = idch;
+      d_chi2[ntrk] = sngl_svxcnt->getChiSquare();
+      d_ndf[ntrk] = sngl_svxcnt->getNDF();
+      d_dcat[ntrk] = sngl_svxcnt->getDCA2D();
+      d_dcal[ntrk] = sngl_svxcnt->getDCAZ();
 
+
+
+      // global position
+      d_phi0[ntrk] = node_cnt->get_phi0(idch);
+      d_the0[ntrk] = node_cnt->get_the0(idch);
+
+      // dc
+      d_quality[ntrk] = node_cnt->get_quality(idch);
+      d_charge[ntrk] = node_cnt->get_charge(idch);
+      d_dcarm[ntrk] = node_cnt->get_dcarm(idch);
+      d_alpha[ntrk] = node_cnt->get_alpha(idch);
+      d_phi[ntrk] = node_cnt->get_phi(idch);
+      d_zed[ntrk] = node_cnt->get_zed(idch);
+      d_mom[ntrk] = node_cnt->get_mom(idch);
+      d_pT[ntrk] = node_cnt->get_mom(idch)*sin(node_cnt->get_the0(idch));
+
+      // pc
+      d_ppc1x[ntrk] = node_cnt->get_ppc1x(idch);
+      d_ppc1y[ntrk] = node_cnt->get_ppc1y(idch);
+      d_ppc1z[ntrk] = node_cnt->get_ppc1z(idch);
+      d_ppc1phi[ntrk] = atan2(node_cnt->get_ppc1y(idch),node_cnt->get_ppc1x(idch));
+      d_ppc2x[ntrk] = node_cnt->get_ppc2x(idch);
+      d_ppc2y[ntrk] = node_cnt->get_ppc2y(idch);
+      d_ppc2z[ntrk] = node_cnt->get_ppc2z(idch);
+      d_pc2z[ntrk] = node_cnt->get_ppc2z(idch) - node_cnt->get_pc2dz(idch);
+      d_pc2phi[ntrk] = atan2(node_cnt->get_ppc2y(idch),node_cnt->get_ppc2x(idch)) - node_cnt->get_pc2dphi(idch);
+      d_pc2dz[ntrk] = node_cnt->get_pc2dz(idch);
+      d_pc2dphi[ntrk] = node_cnt->get_pc2dphi(idch);
+      d_pc2sdz[ntrk] = node_cnt->get_pc2sdz(idch);
+      d_pc2sdphi[ntrk] = node_cnt->get_pc2sdphi(idch);
+      d_ppc3x[ntrk] = node_cnt->get_ppc3x(idch);
+      d_ppc3y[ntrk] = node_cnt->get_ppc3y(idch);
+      d_ppc3z[ntrk] = node_cnt->get_ppc3z(idch);
+      d_pc3z[ntrk] = node_cnt->get_ppc3z(idch) - node_cnt->get_pc3dz(idch);
+      d_pc3phi[ntrk] = atan2(node_cnt->get_ppc3y(idch),node_cnt->get_ppc3x(idch)) - node_cnt->get_pc3dphi(idch);
+      d_pc3dz[ntrk] = node_cnt->get_pc3dz(idch);
+      d_pc3dphi[ntrk] = node_cnt->get_pc3dphi(idch);
+      d_pc3sdz[ntrk] = node_cnt->get_pc3sdz(idch);
+      d_pc3sdphi[ntrk] = node_cnt->get_pc3sdphi(idch);
+
+      // emc
+      d_deadmap[ntrk] = node_cnt->get_deadmap(idch);
+      d_warnmap[ntrk] = node_cnt->get_warnmap(idch);
+      d_pemcx[ntrk] = node_cnt->get_pemcx(idch);
+      d_pemcy[ntrk] = node_cnt->get_pemcy(idch);
+      d_pemcz[ntrk] = node_cnt->get_pemcz(idch);
+      d_emcz[ntrk] = node_cnt->get_pemcz(idch) - node_cnt->get_emcdz(idch);
+      d_emcphi[ntrk] = atan2(node_cnt->get_pemcy(idch),node_cnt->get_pemcx(idch)) - node_cnt->get_emcdphi(idch);
+      d_emcdz[ntrk] = node_cnt->get_emcdz(idch);
+      d_emcdphi[ntrk] = node_cnt->get_emcdphi(idch);
+      d_emcsdz[ntrk] = node_cnt->get_emcsdz(idch);
+      d_emcsdphi[ntrk] = node_cnt->get_emcsdphi(idch);
+      d_ecore[ntrk] = node_cnt->get_ecore(idch);
+      d_ecent[ntrk] = node_cnt->get_ecent(idch);
+      d_emce[ntrk] = node_cnt->get_emce(idch);
+      d_prob[ntrk] = node_cnt->get_prob(idch);
+      d_emcchi2[ntrk] = node_cnt->get_emcchi2(idch);
+      d_sect[ntrk] = node_cnt->get_sect(idch);
+      d_ysect[ntrk] = node_cnt->get_ysect(idch);
+      d_zsect[ntrk] = node_cnt->get_zsect(idch);
+
+      // rich
+      d_disp[ntrk] = node_cnt->get_disp(idch);
+      d_n0[ntrk] = node_cnt->get_n0(idch);
+      d_n1[ntrk] = node_cnt->get_n1(idch);
+      d_n2[ntrk] = node_cnt->get_n2(idch);
+      d_npe0[ntrk] = node_cnt->get_npe0(idch);
+      d_npe1[ntrk] = node_cnt->get_npe1(idch);
+      d_npe2[ntrk] = node_cnt->get_npe2(idch);
+
+      ntrk++;
     } // loop over SVX Central Tracks
+  if ( ntrk == 0 ) return DISCARDEVENT;
+  tree_svxcnt->Fill();
+
+
 
   // --- trigger selection
   if ((trigbitscaled&0x00000010) == 16)

@@ -5,7 +5,7 @@
 class PHCompositeNode;
 class TFile;
 class TH1;
-class TNtuple;
+class TTree;
 
 class SimpleTreeSVXCNT : public SubsysReco
 {
@@ -16,6 +16,7 @@ class SimpleTreeSVXCNT : public SubsysReco
   virtual ~SimpleTreeSVXCNT(){}
 
 
+  int Init(PHCompositeNode *topNode);
   int InitRun(PHCompositeNode *topNode);
   int process_event(PHCompositeNode *topNode);
   int End(PHCompositeNode *topNode);
@@ -51,6 +52,9 @@ class SimpleTreeSVXCNT : public SubsysReco
 
   // --- conversion from base class to derived class allowed
   // --- but should consider being explicit here...
+  TTree *tree_cnt;
+  TTree *tree_svxcnt;
+
   TH1 *th1f_cent;
   TH1 *th1f_vtxz;
   TH1 *th1f_bbcz;
@@ -59,9 +63,90 @@ class SimpleTreeSVXCNT : public SubsysReco
   TH1 *th1f_bbcsq;
   TH1 *th1f_bbcnq;
 
+  int d_runn;
+  int d_cent;
+  int d_ntrk;
+  float d_bbcz;
 
-  TNtuple *ntpedch;
-  TNtuple *ntpesvx;
+  static const int maxn = 5000;
+
+  //global position
+  float d_phi0[maxn];
+  float d_the0[maxn];
+
+  //dc
+  int d_quality[maxn];
+  int d_charge[maxn];
+  int d_dcarm[maxn];
+  float d_alpha[maxn];
+  float d_phi[maxn];
+  float d_zed[maxn];
+  float d_mom[maxn];
+  float d_pT[maxn];
+
+  //pc
+  float d_ppc1x[maxn];
+  float d_ppc1y[maxn];
+  float d_ppc1z[maxn];
+  float d_ppc1phi[maxn];
+  float d_ppc2x[maxn];
+  float d_ppc2y[maxn];
+  float d_pc2z[maxn];
+  float d_pc2phi[maxn];
+  float d_pc2dz[maxn];
+  float d_pc2dphi[maxn];
+  float d_pc2sdz[maxn];
+  float d_pc2sdphi[maxn];
+  float d_ppc2z[maxn];
+  float d_ppc3x[maxn];
+  float d_ppc3y[maxn];
+  float d_ppc3z[maxn];
+  float d_pc3z[maxn];
+  float d_pc3phi[maxn];
+  float d_pc3dz[maxn];
+  float d_pc3dphi[maxn];
+  float d_pc3sdz[maxn];
+  float d_pc3sdphi[maxn];
+
+  //emc
+  int d_deadmap[maxn];
+  int d_warnmap[maxn];
+  float d_pemcx[maxn];
+  float d_pemcy[maxn];
+  float d_pemcz[maxn];
+  float d_emcphi[maxn];
+  float d_emcz[maxn];
+  float d_emcdphi[maxn];
+  float d_emcdz[maxn];
+  float d_emcsdphi[maxn];
+  float d_emcsdz[maxn];
+  float d_ecent[maxn];
+  float d_ecore[maxn];
+  float d_emce[maxn];
+  float d_prob[maxn];
+  float d_emcchi2[maxn];
+  float d_sect[maxn];
+  float d_ysect[maxn];
+  float d_zsect[maxn];
+
+  //rich
+  float d_disp[maxn];
+  int d_n0[maxn];
+  int d_n1[maxn];
+  int d_n2[maxn];
+  float d_npe0[maxn];
+  float d_npe1[maxn];
+  float d_npe2[maxn];
+
+  // --- svxcnt
+  int d_idch[maxn];
+  float d_chi2[maxn];
+  int d_ndf[maxn];
+  float d_dcat[maxn];
+  float d_dcal[maxn];
+
+
+
 
 };
 
