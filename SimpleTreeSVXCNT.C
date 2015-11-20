@@ -18,6 +18,7 @@
 #include "PHCentralTrack.h"
 #include "SvxCentralTrack.h"
 #include "SvxCentralTrackList.h"
+#include "SvxClusterInfo.h"
 
 
 #define eID_nPbins 50
@@ -61,9 +62,6 @@ int SimpleTreeSVXCNT::Init(PHCompositeNode *topNode)
   // --- emc
   tree_cnt->Branch("deadmap",d_deadmap,"deadmap[ntrk]/I");
   tree_cnt->Branch("warnmap",d_warnmap,"warnmap[ntrk]/I");
-  tree_cnt->Branch("pemcx",d_pemcx,"pemcx[ntrk]/F");
-  tree_cnt->Branch("pemcy",d_pemcy,"pemcy[ntrk]/F");
-  tree_cnt->Branch("pemcz",d_pemcz,"pemcz[ntrk]/F");
   tree_cnt->Branch("emcz",d_emcz,"emcz[ntrk]/F");
   tree_cnt->Branch("emcphi",d_emcdphi,"emcphi[ntrk]/F");
   tree_cnt->Branch("emcdz",d_emcdz,"emcdz[ntrk]/F");
@@ -75,9 +73,6 @@ int SimpleTreeSVXCNT::Init(PHCompositeNode *topNode)
   tree_cnt->Branch("emce",d_emce,"emce[ntrk]/F");
   tree_cnt->Branch("prob",d_prob,"prob[ntrk]/F");
   tree_cnt->Branch("emcchi2",d_emcchi2,"emcchi2[ntrk]/F");
-  tree_cnt->Branch("sect",d_sect,"sect[ntrk]/F");
-  tree_cnt->Branch("ysect",d_ysect,"ysect[ntrk]/F");
-  tree_cnt->Branch("zsect",d_zsect,"zsect[ntrk]/F");
   // --- rich
   tree_cnt->Branch("disp",d_disp,"disp[ntrk]/S");
   tree_cnt->Branch("n0",d_n0,"n0[ntrk]/S");
@@ -249,9 +244,6 @@ int SimpleTreeSVXCNT::process_event(PHCompositeNode *topNode)
       // emc
       d_deadmap[ntrk] = node_cnt->get_deadmap(itrk);
       d_warnmap[ntrk] = node_cnt->get_warnmap(itrk);
-      d_pemcx[ntrk] = node_cnt->get_pemcx(itrk);
-      d_pemcy[ntrk] = node_cnt->get_pemcy(itrk);
-      d_pemcz[ntrk] = node_cnt->get_pemcz(itrk);
       d_emcz[ntrk] = node_cnt->get_pemcz(itrk) - node_cnt->get_emcdz(itrk);
       d_emcphi[ntrk] = atan2(node_cnt->get_pemcy(itrk),node_cnt->get_pemcx(itrk)) - node_cnt->get_emcdphi(itrk);
       d_emcdz[ntrk] = node_cnt->get_emcdz(itrk);
@@ -263,9 +255,6 @@ int SimpleTreeSVXCNT::process_event(PHCompositeNode *topNode)
       d_emce[ntrk] = node_cnt->get_emce(itrk);
       d_prob[ntrk] = node_cnt->get_prob(itrk);
       d_emcchi2[ntrk] = node_cnt->get_emcchi2(itrk);
-      d_sect[ntrk] = node_cnt->get_sect(itrk);
-      d_ysect[ntrk] = node_cnt->get_ysect(itrk);
-      d_zsect[ntrk] = node_cnt->get_zsect(itrk);
 
       // rich
       d_disp[ntrk] = node_cnt->get_disp(itrk);
@@ -297,10 +286,28 @@ int SimpleTreeSVXCNT::process_event(PHCompositeNode *topNode)
     {
 
       SvxCentralTrack *sngl_svxcnt = node_svxcnt->getCentralTrack(i);
+      if ( !sngl_svxcnt ) {cout << " no central track" << endl; continue;}
+      float nhits = sngl_svxcnt->getNhits();
 
-      if (!sngl_svxcnt) {cout << " no central track" << endl; continue;}
-      float nhit = sngl_svxcnt->getNhits();
-      if ( nhit <= 2 ) continue; // require 3 hit tracks...?
+      float cx[4] = {-999,-999,-999,-999};
+      float cy[4] = {-999,-999,-999,-999};
+      float cz[4] = {-999,-999,-999,-999};
+      float cr[4] = {-999,-999,-999,-999};
+      float cphi[4] = {-999,-999,-999,-999};
+      cout << i << " " << nhits << endl;
+      for ( int ihit = 0; ihit < nhits; ihit++ )
+	{
+	  SvxClusterInfo *cluster = (SvxClusterInfo *)sngl_svxcnt->getClusterInfo(ihit);
+	  float x = cluster->getPosition(0);
+	  float y = cluster->getPosition(1);
+	  float z = cluster->getPosition(2);
+	  cout << ihit << " " << x << " " << y << " " << z << " " << endl;
+	  cx[ihit] = x;
+	  cy[ihit] = y;
+	  cz[ihit] = z;
+	  cr[ihit] = sqrt(x*x + y*y);
+	  cphi[ihit] = atan2(x,y);
+	}
 
       int idch = sngl_svxcnt->getDchIndex();
 
@@ -329,9 +336,6 @@ int SimpleTreeSVXCNT::process_event(PHCompositeNode *topNode)
       // emc
       d_deadmap[ntrk] = node_cnt->get_deadmap(idch);
       d_warnmap[ntrk] = node_cnt->get_warnmap(idch);
-      d_pemcx[ntrk] = node_cnt->get_pemcx(idch);
-      d_pemcy[ntrk] = node_cnt->get_pemcy(idch);
-      d_pemcz[ntrk] = node_cnt->get_pemcz(idch);
       d_emcz[ntrk] = node_cnt->get_pemcz(idch) - node_cnt->get_emcdz(idch);
       d_emcphi[ntrk] = atan2(node_cnt->get_pemcy(idch),node_cnt->get_pemcx(idch)) - node_cnt->get_emcdphi(idch);
       d_emcdz[ntrk] = node_cnt->get_emcdz(idch);
@@ -343,9 +347,6 @@ int SimpleTreeSVXCNT::process_event(PHCompositeNode *topNode)
       d_emce[ntrk] = node_cnt->get_emce(idch);
       d_prob[ntrk] = node_cnt->get_prob(idch);
       d_emcchi2[ntrk] = node_cnt->get_emcchi2(idch);
-      d_sect[ntrk] = node_cnt->get_sect(idch);
-      d_ysect[ntrk] = node_cnt->get_ysect(idch);
-      d_zsect[ntrk] = node_cnt->get_zsect(idch);
 
       // rich
       d_disp[ntrk] = node_cnt->get_disp(idch);

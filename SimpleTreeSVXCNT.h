@@ -87,9 +87,6 @@ class SimpleTreeSVXCNT : public SubsysReco
   //emc
   int d_deadmap[maxn];
   int d_warnmap[maxn];
-  float d_pemcx[maxn];
-  float d_pemcy[maxn];
-  float d_pemcz[maxn];
   float d_emcphi[maxn];
   float d_emcz[maxn];
   float d_emcdphi[maxn];
@@ -101,9 +98,6 @@ class SimpleTreeSVXCNT : public SubsysReco
   float d_emce[maxn];
   float d_prob[maxn];
   float d_emcchi2[maxn];
-  float d_sect[maxn];
-  float d_ysect[maxn];
-  float d_zsect[maxn];
 
   //rich
   float d_disp[maxn];
