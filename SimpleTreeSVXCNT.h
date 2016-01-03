@@ -63,6 +63,17 @@ class SimpleTreeSVXCNT : public SubsysReco
   TH1 *th1f_bbcsq;
   TH1 *th1f_bbcnq;
 
+  TH1 *th1f_dcat_B3_ladder[24];
+  TH1 *th1f_dcat_B2_ladder[16];
+  TH1 *th1f_dcat_B1_ladder[20];
+  TH1 *th1f_dcat_B0_ladder[10];
+
+  TH1 *th1f_dcal_B3_ladder[24];
+  TH1 *th1f_dcal_B2_ladder[16];
+  TH1 *th1f_dcal_B1_ladder[20];
+  TH1 *th1f_dcal_B0_ladder[10];
+
+
   int d_runn;
   int d_cent;
   int d_ntrk;

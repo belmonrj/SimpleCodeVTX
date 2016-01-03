@@ -135,6 +135,21 @@ int SimpleTreeSVXCNT::Init(PHCompositeNode *topNode)
   th1f_nsvx = new TH1F("th1f_nsvx","",20,0,20);
   th1f_ndch = new TH1F("th1f_ndch","",20,0,20);
 
+  // --- histogram arrays for ladder study...
+
+  for(int i=0; i<24; i++)
+    {
+      th1f_dcat_B3_ladder[i] = new TH1F(Form("th1f_dcat_B3_ladder%d",i),"",200,-1,1);
+      if(i<16) th1f_dcat_B2_ladder[i] = new TH1F(Form("th1f_dcat_B2_ladder%d",i),"",200,-1,1);
+      if(i<20) th1f_dcat_B1_ladder[i] = new TH1F(Form("th1f_dcat_B1_ladder%d",i),"",200,-1,1);
+      if(i<10) th1f_dcat_B0_ladder[i] = new TH1F(Form("th1f_dcat_B0_ladder%d",i),"",200,-1,1);
+      // ---
+      th1f_dcal_B3_ladder[i] = new TH1F(Form("th1f_dcal_B3_ladder%d",i),"",200,-1,1);
+      if(i<16) th1f_dcal_B2_ladder[i] = new TH1F(Form("th1f_dcal_B2_ladder%d",i),"",200,-1,1);
+      if(i<20) th1f_dcal_B1_ladder[i] = new TH1F(Form("th1f_dcal_B1_ladder%d",i),"",200,-1,1);
+      if(i<10) th1f_dcal_B0_ladder[i] = new TH1F(Form("th1f_dcal_B0_ladder%d",i),"",200,-1,1);
+    }
+
   return 0;
 
 }
@@ -288,36 +303,48 @@ int SimpleTreeSVXCNT::process_event(PHCompositeNode *topNode)
       SvxCentralTrack *sngl_svxcnt = node_svxcnt->getCentralTrack(i);
       if ( !sngl_svxcnt ) {cout << " no central track" << endl; continue;}
       float nhits = sngl_svxcnt->getNhits();
-
-      float cx[4] = {-999,-999,-999,-999};
-      float cy[4] = {-999,-999,-999,-999};
-      float cz[4] = {-999,-999,-999,-999};
-      float cr[4] = {-999,-999,-999,-999};
-      float cphi[4] = {-999,-999,-999,-999};
-      cout << i << " " << nhits << endl;
-      for ( int ihit = 0; ihit < nhits; ihit++ )
-	{
-	  SvxClusterInfo *cluster = (SvxClusterInfo *)sngl_svxcnt->getClusterInfo(ihit);
-	  float x = cluster->getPosition(0);
-	  float y = cluster->getPosition(1);
-	  float z = cluster->getPosition(2);
-	  cout << ihit << " " << x << " " << y << " " << z << " " << endl;
-	  cx[ihit] = x;
-	  cy[ihit] = y;
-	  cz[ihit] = z;
-	  cr[ihit] = sqrt(x*x + y*y);
-	  cphi[ihit] = atan2(x,y);
-	}
-
-      int idch = sngl_svxcnt->getDchIndex();
-
-      d_idch[ntrk] = idch;
       d_chi2[ntrk] = sngl_svxcnt->getChiSquare();
       d_ndf[ntrk] = sngl_svxcnt->getNDF();
       d_dcat[ntrk] = sngl_svxcnt->getDCA2D();
       d_dcal[ntrk] = sngl_svxcnt->getDCAZ();
 
 
+      float cx[4] = {-999,-999,-999,-999};
+      float cy[4] = {-999,-999,-999,-999};
+      float cz[4] = {-999,-999,-999,-999};
+      float cr[4] = {-999,-999,-999,-999};
+      float cphi[4] = {-999,-999,-999,-999};
+      //cout << i << " " << nhits << endl;
+      for ( int ihit = 0; ihit < nhits; ihit++ )
+	{
+	  SvxClusterInfo *cluster = (SvxClusterInfo *)sngl_svxcnt->getClusterInfo(ihit);
+	  float x = cluster->getPosition(0);
+	  float y = cluster->getPosition(1);
+	  float z = cluster->getPosition(2);
+	  //cout << ihit << " " << x << " " << y << " " << z << " " << endl;
+	  cx[ihit] = x;
+	  cy[ihit] = y;
+	  cz[ihit] = z;
+	  cr[ihit] = sqrt(x*x + y*y);
+	  cphi[ihit] = atan2(x,y);
+	  int layer = cluster->getLayer();
+	  int ladder = cluster->getLadder();
+	  int sensor = cluster->getSensor();
+	  if(layer==0) th1f_dcat_B0_ladder[ladder]->Fill(d_dcat[ntrk]);
+	  if(layer==1) th1f_dcat_B1_ladder[ladder]->Fill(d_dcat[ntrk]);
+	  if(layer==2) th1f_dcat_B2_ladder[ladder]->Fill(d_dcat[ntrk]);
+	  if(layer==3) th1f_dcat_B3_ladder[ladder]->Fill(d_dcat[ntrk]);
+	  if(false) cout << ihit << " out of " << nhits << ", " << layer << " " << ladder << " " << sensor << " " << endl;
+	  if(layer==0) th1f_dcal_B0_ladder[ladder]->Fill(d_dcal[ntrk]);
+	  if(layer==1) th1f_dcal_B1_ladder[ladder]->Fill(d_dcal[ntrk]);
+	  if(layer==2) th1f_dcal_B2_ladder[ladder]->Fill(d_dcal[ntrk]);
+	  if(layer==3) th1f_dcal_B3_ladder[ladder]->Fill(d_dcal[ntrk]);
+
+	}
+
+
+      int idch = sngl_svxcnt->getDchIndex();
+      d_idch[ntrk] = idch;
 
       // global position
       d_phi0[ntrk] = node_cnt->get_phi0(idch);
