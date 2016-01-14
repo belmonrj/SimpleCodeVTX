@@ -139,15 +139,39 @@ int SimpleTreeSVXCNT::Init(PHCompositeNode *topNode)
 
   for(int i=0; i<24; i++)
     {
-      th1f_dcat_B3_ladder[i] = new TH1F(Form("th1f_dcat_B3_ladder%d",i),"",200,-1,1);
-      if(i<16) th1f_dcat_B2_ladder[i] = new TH1F(Form("th1f_dcat_B2_ladder%d",i),"",200,-1,1);
-      if(i<20) th1f_dcat_B1_ladder[i] = new TH1F(Form("th1f_dcat_B1_ladder%d",i),"",200,-1,1);
-      if(i<10) th1f_dcat_B0_ladder[i] = new TH1F(Form("th1f_dcat_B0_ladder%d",i),"",200,-1,1);
-      // ---
-      th1f_dcal_B3_ladder[i] = new TH1F(Form("th1f_dcal_B3_ladder%d",i),"",200,-1,1);
-      if(i<16) th1f_dcal_B2_ladder[i] = new TH1F(Form("th1f_dcal_B2_ladder%d",i),"",200,-1,1);
-      if(i<20) th1f_dcal_B1_ladder[i] = new TH1F(Form("th1f_dcal_B1_ladder%d",i),"",200,-1,1);
-      if(i<10) th1f_dcal_B0_ladder[i] = new TH1F(Form("th1f_dcal_B0_ladder%d",i),"",200,-1,1);
+      // --- all charges
+      // --- dcat
+      th1f_dcat_B3_ladder[i] = new TH1F(Form("th1f_dcat_B3_ladder%d",i),"",200,-0.5,0.5);
+      if(i<16) th1f_dcat_B2_ladder[i] = new TH1F(Form("th1f_dcat_B2_ladder%d",i),"",200,-0.5,0.5);
+      if(i<20) th1f_dcat_B1_ladder[i] = new TH1F(Form("th1f_dcat_B1_ladder%d",i),"",200,-0.5,0.5);
+      if(i<10) th1f_dcat_B0_ladder[i] = new TH1F(Form("th1f_dcat_B0_ladder%d",i),"",200,-0.5,0.5);
+      // --- dcal
+      th1f_dcal_B3_ladder[i] = new TH1F(Form("th1f_dcal_B3_ladder%d",i),"",200,-0.5,0.5);
+      if(i<16) th1f_dcal_B2_ladder[i] = new TH1F(Form("th1f_dcal_B2_ladder%d",i),"",200,-0.5,0.5);
+      if(i<20) th1f_dcal_B1_ladder[i] = new TH1F(Form("th1f_dcal_B1_ladder%d",i),"",200,-0.5,0.5);
+      if(i<10) th1f_dcal_B0_ladder[i] = new TH1F(Form("th1f_dcal_B0_ladder%d",i),"",200,-0.5,0.5);
+      // --- pos charges
+      // --- dcat
+      th1f_posdcat_B3_ladder[i] = new TH1F(Form("th1f_posdcat_B3_ladder%d",i),"",200,-0.5,0.5);
+      if(i<16) th1f_posdcat_B2_ladder[i] = new TH1F(Form("th1f_posdcat_B2_ladder%d",i),"",200,-0.5,0.5);
+      if(i<20) th1f_posdcat_B1_ladder[i] = new TH1F(Form("th1f_posdcat_B1_ladder%d",i),"",200,-0.5,0.5);
+      if(i<10) th1f_posdcat_B0_ladder[i] = new TH1F(Form("th1f_posdcat_B0_ladder%d",i),"",200,-0.5,0.5);
+      // --- dcal
+      th1f_posdcal_B3_ladder[i] = new TH1F(Form("th1f_posdcal_B3_ladder%d",i),"",200,-0.5,0.5);
+      if(i<16) th1f_posdcal_B2_ladder[i] = new TH1F(Form("th1f_posdcal_B2_ladder%d",i),"",200,-0.5,0.5);
+      if(i<20) th1f_posdcal_B1_ladder[i] = new TH1F(Form("th1f_posdcal_B1_ladder%d",i),"",200,-0.5,0.5);
+      if(i<10) th1f_posdcal_B0_ladder[i] = new TH1F(Form("th1f_posdcal_B0_ladder%d",i),"",200,-0.5,0.5);
+      // --- neg charges
+      // --- dcat
+      th1f_negdcat_B3_ladder[i] = new TH1F(Form("th1f_negdcat_B3_ladder%d",i),"",200,-0.5,0.5);
+      if(i<16) th1f_negdcat_B2_ladder[i] = new TH1F(Form("th1f_negdcat_B2_ladder%d",i),"",200,-0.5,0.5);
+      if(i<20) th1f_negdcat_B1_ladder[i] = new TH1F(Form("th1f_negdcat_B1_ladder%d",i),"",200,-0.5,0.5);
+      if(i<10) th1f_negdcat_B0_ladder[i] = new TH1F(Form("th1f_negdcat_B0_ladder%d",i),"",200,-0.5,0.5);
+      // --- dcal
+      th1f_negdcal_B3_ladder[i] = new TH1F(Form("th1f_negdcal_B3_ladder%d",i),"",200,-0.5,0.5);
+      if(i<16) th1f_negdcal_B2_ladder[i] = new TH1F(Form("th1f_negdcal_B2_ladder%d",i),"",200,-0.5,0.5);
+      if(i<20) th1f_negdcal_B1_ladder[i] = new TH1F(Form("th1f_negdcal_B1_ladder%d",i),"",200,-0.5,0.5);
+      if(i<10) th1f_negdcal_B0_ladder[i] = new TH1F(Form("th1f_negdcal_B0_ladder%d",i),"",200,-0.5,0.5);
     }
 
   return 0;
@@ -302,7 +326,53 @@ int SimpleTreeSVXCNT::process_event(PHCompositeNode *topNode)
 
       SvxCentralTrack *sngl_svxcnt = node_svxcnt->getCentralTrack(i);
       if ( !sngl_svxcnt ) {cout << " no central track" << endl; continue;}
-      float nhits = sngl_svxcnt->getNhits();
+
+
+      int idch = sngl_svxcnt->getDchIndex();
+      d_idch[ntrk] = idch;
+
+      // global position
+      d_phi0[ntrk] = node_cnt->get_phi0(idch);
+      d_the0[ntrk] = node_cnt->get_the0(idch);
+
+      // dc
+      d_quality[ntrk] = node_cnt->get_quality(idch);
+      d_charge[ntrk] = node_cnt->get_charge(idch);
+      d_dcarm[ntrk] = node_cnt->get_dcarm(idch);
+      d_alpha[ntrk] = node_cnt->get_alpha(idch);
+      d_phi[ntrk] = node_cnt->get_phi(idch);
+      d_zed[ntrk] = node_cnt->get_zed(idch);
+      d_mom[ntrk] = node_cnt->get_mom(idch);
+      d_pT[ntrk] = node_cnt->get_mom(idch)*sin(node_cnt->get_the0(idch));
+      bool ptflag = d_pT[ntrk] > 1.0 && d_pT[ntrk] < 10.0;
+      bool pos = false;
+      bool neg = false;
+      if(d_charge[ntrk]==1) pos = true;
+      if(d_charge[ntrk]==-1) neg = true;
+      //cout << "charge is " << d_charge[ntrk] << " " << pos << " " << neg << endl;
+      // emc
+      d_deadmap[ntrk] = node_cnt->get_deadmap(idch);
+      d_warnmap[ntrk] = node_cnt->get_warnmap(idch);
+      d_emcz[ntrk] = node_cnt->get_pemcz(idch) - node_cnt->get_emcdz(idch);
+      d_emcphi[ntrk] = atan2(node_cnt->get_pemcy(idch),node_cnt->get_pemcx(idch)) - node_cnt->get_emcdphi(idch);
+      d_emcdz[ntrk] = node_cnt->get_emcdz(idch);
+      d_emcdphi[ntrk] = node_cnt->get_emcdphi(idch);
+      d_emcsdz[ntrk] = node_cnt->get_emcsdz(idch);
+      d_emcsdphi[ntrk] = node_cnt->get_emcsdphi(idch);
+      d_ecore[ntrk] = node_cnt->get_ecore(idch);
+      d_ecent[ntrk] = node_cnt->get_ecent(idch);
+      d_emce[ntrk] = node_cnt->get_emce(idch);
+      d_prob[ntrk] = node_cnt->get_prob(idch);
+      d_emcchi2[ntrk] = node_cnt->get_emcchi2(idch);
+
+      // rich
+      d_disp[ntrk] = node_cnt->get_disp(idch);
+      d_n0[ntrk] = node_cnt->get_n0(idch);
+      d_npe0[ntrk] = node_cnt->get_npe0(idch);
+      d_crkchi2[ntrk] = node_cnt->get_chi2(idch);
+
+
+      int nhits = sngl_svxcnt->getNhits();
       d_chi2[ntrk] = sngl_svxcnt->getChiSquare();
       d_ndf[ntrk] = sngl_svxcnt->getNDF();
       d_dcat[ntrk] = sngl_svxcnt->getDCA2D();
@@ -330,58 +400,51 @@ int SimpleTreeSVXCNT::process_event(PHCompositeNode *topNode)
 	  int layer = cluster->getLayer();
 	  int ladder = cluster->getLadder();
 	  int sensor = cluster->getSensor();
-	  if(layer==0) th1f_dcat_B0_ladder[ladder]->Fill(d_dcat[ntrk]);
-	  if(layer==1) th1f_dcat_B1_ladder[ladder]->Fill(d_dcat[ntrk]);
-	  if(layer==2) th1f_dcat_B2_ladder[ladder]->Fill(d_dcat[ntrk]);
-	  if(layer==3) th1f_dcat_B3_ladder[ladder]->Fill(d_dcat[ntrk]);
+	  // --- this dumb line of code is to trick the -Werror compiler flag so that I can keep the sensor variable...
 	  if(false) cout << ihit << " out of " << nhits << ", " << layer << " " << ladder << " " << sensor << " " << endl;
-	  if(layer==0) th1f_dcal_B0_ladder[ladder]->Fill(d_dcal[ntrk]);
-	  if(layer==1) th1f_dcal_B1_ladder[ladder]->Fill(d_dcal[ntrk]);
-	  if(layer==2) th1f_dcal_B2_ladder[ladder]->Fill(d_dcal[ntrk]);
-	  if(layer==3) th1f_dcal_B3_ladder[ladder]->Fill(d_dcal[ntrk]);
+	  if(ptflag)
+	    {
+	      // --- DCA dist histos, all charges
+	      if(layer==0) th1f_dcat_B0_ladder[ladder]->Fill(d_dcat[ntrk]);
+	      if(layer==1) th1f_dcat_B1_ladder[ladder]->Fill(d_dcat[ntrk]);
+	      if(layer==2) th1f_dcat_B2_ladder[ladder]->Fill(d_dcat[ntrk]);
+	      if(layer==3) th1f_dcat_B3_ladder[ladder]->Fill(d_dcat[ntrk]);
+	      if(layer==0) th1f_dcal_B0_ladder[ladder]->Fill(d_dcal[ntrk]);
+	      if(layer==1) th1f_dcal_B1_ladder[ladder]->Fill(d_dcal[ntrk]);
+	      if(layer==2) th1f_dcal_B2_ladder[ladder]->Fill(d_dcal[ntrk]);
+	      if(layer==3) th1f_dcal_B3_ladder[ladder]->Fill(d_dcal[ntrk]);
+	      // --- DCA dist histos, pos charge
+	      if(pos)
+		{
+		  //cout << "inside pos block for dcat = " << d_dcat[ntrk] << ", charge is " << d_charge[ntrk] << " " << pos << " " << neg << endl;
+		  if(layer==0) th1f_posdcat_B0_ladder[ladder]->Fill(d_dcat[ntrk]);
+		  if(layer==1) th1f_posdcat_B1_ladder[ladder]->Fill(d_dcat[ntrk]);
+		  if(layer==2) th1f_posdcat_B2_ladder[ladder]->Fill(d_dcat[ntrk]);
+		  if(layer==3) th1f_posdcat_B3_ladder[ladder]->Fill(d_dcat[ntrk]);
+		  if(layer==0) th1f_posdcal_B0_ladder[ladder]->Fill(d_dcal[ntrk]);
+		  if(layer==1) th1f_posdcal_B1_ladder[ladder]->Fill(d_dcal[ntrk]);
+		  if(layer==2) th1f_posdcal_B2_ladder[ladder]->Fill(d_dcal[ntrk]);
+		  if(layer==3) th1f_posdcal_B3_ladder[ladder]->Fill(d_dcal[ntrk]);
+		}
+	      // --- DCA dist histos, neg charge
+	      if(neg)
+		{
+		  //cout << "inside neg block for dcat = " << d_dcat[ntrk] << ", charge is " << d_charge[ntrk] << " " << pos << " " << neg << endl;
+		  if(layer==0) th1f_negdcat_B0_ladder[ladder]->Fill(d_dcat[ntrk]);
+		  if(layer==1) th1f_negdcat_B1_ladder[ladder]->Fill(d_dcat[ntrk]);
+		  if(layer==2) th1f_negdcat_B2_ladder[ladder]->Fill(d_dcat[ntrk]);
+		  if(layer==3) th1f_negdcat_B3_ladder[ladder]->Fill(d_dcat[ntrk]);
+		  if(layer==0) th1f_negdcal_B0_ladder[ladder]->Fill(d_dcal[ntrk]);
+		  if(layer==1) th1f_negdcal_B1_ladder[ladder]->Fill(d_dcal[ntrk]);
+		  if(layer==2) th1f_negdcal_B2_ladder[ladder]->Fill(d_dcal[ntrk]);
+		  if(layer==3) th1f_negdcal_B3_ladder[ladder]->Fill(d_dcal[ntrk]);
+		}
+	    } // ptflag
 
-	}
-
-
-      int idch = sngl_svxcnt->getDchIndex();
-      d_idch[ntrk] = idch;
-
-      // global position
-      d_phi0[ntrk] = node_cnt->get_phi0(idch);
-      d_the0[ntrk] = node_cnt->get_the0(idch);
-
-      // dc
-      d_quality[ntrk] = node_cnt->get_quality(idch);
-      d_charge[ntrk] = node_cnt->get_charge(idch);
-      d_dcarm[ntrk] = node_cnt->get_dcarm(idch);
-      d_alpha[ntrk] = node_cnt->get_alpha(idch);
-      d_phi[ntrk] = node_cnt->get_phi(idch);
-      d_zed[ntrk] = node_cnt->get_zed(idch);
-      d_mom[ntrk] = node_cnt->get_mom(idch);
-      d_pT[ntrk] = node_cnt->get_mom(idch)*sin(node_cnt->get_the0(idch));
-
-      // emc
-      d_deadmap[ntrk] = node_cnt->get_deadmap(idch);
-      d_warnmap[ntrk] = node_cnt->get_warnmap(idch);
-      d_emcz[ntrk] = node_cnt->get_pemcz(idch) - node_cnt->get_emcdz(idch);
-      d_emcphi[ntrk] = atan2(node_cnt->get_pemcy(idch),node_cnt->get_pemcx(idch)) - node_cnt->get_emcdphi(idch);
-      d_emcdz[ntrk] = node_cnt->get_emcdz(idch);
-      d_emcdphi[ntrk] = node_cnt->get_emcdphi(idch);
-      d_emcsdz[ntrk] = node_cnt->get_emcsdz(idch);
-      d_emcsdphi[ntrk] = node_cnt->get_emcsdphi(idch);
-      d_ecore[ntrk] = node_cnt->get_ecore(idch);
-      d_ecent[ntrk] = node_cnt->get_ecent(idch);
-      d_emce[ntrk] = node_cnt->get_emce(idch);
-      d_prob[ntrk] = node_cnt->get_prob(idch);
-      d_emcchi2[ntrk] = node_cnt->get_emcchi2(idch);
-
-      // rich
-      d_disp[ntrk] = node_cnt->get_disp(idch);
-      d_n0[ntrk] = node_cnt->get_n0(idch);
-      d_npe0[ntrk] = node_cnt->get_npe0(idch);
-      d_crkchi2[ntrk] = node_cnt->get_chi2(idch);
+	} // loop over hits
 
       ntrk++;
+
     } // loop over SVX Central Tracks
   if ( ntrk == 0 ) return DISCARDEVENT;
   tree_svxcnt->Fill();

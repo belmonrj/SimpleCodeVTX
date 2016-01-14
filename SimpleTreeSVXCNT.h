@@ -67,11 +67,28 @@ class SimpleTreeSVXCNT : public SubsysReco
   TH1 *th1f_dcat_B2_ladder[16];
   TH1 *th1f_dcat_B1_ladder[20];
   TH1 *th1f_dcat_B0_ladder[10];
-
   TH1 *th1f_dcal_B3_ladder[24];
   TH1 *th1f_dcal_B2_ladder[16];
   TH1 *th1f_dcal_B1_ladder[20];
   TH1 *th1f_dcal_B0_ladder[10];
+
+  TH1 *th1f_posdcat_B3_ladder[24];
+  TH1 *th1f_posdcat_B2_ladder[16];
+  TH1 *th1f_posdcat_B1_ladder[20];
+  TH1 *th1f_posdcat_B0_ladder[10];
+  TH1 *th1f_posdcal_B3_ladder[24];
+  TH1 *th1f_posdcal_B2_ladder[16];
+  TH1 *th1f_posdcal_B1_ladder[20];
+  TH1 *th1f_posdcal_B0_ladder[10];
+
+  TH1 *th1f_negdcat_B3_ladder[24];
+  TH1 *th1f_negdcat_B2_ladder[16];
+  TH1 *th1f_negdcat_B1_ladder[20];
+  TH1 *th1f_negdcat_B0_ladder[10];
+  TH1 *th1f_negdcal_B3_ladder[24];
+  TH1 *th1f_negdcal_B2_ladder[16];
+  TH1 *th1f_negdcal_B1_ladder[20];
+  TH1 *th1f_negdcal_B0_ladder[10];
 
 
   int d_runn;
