@@ -2,7 +2,8 @@
 
 set number = $1
 
-source ~/.cshrc
+#source ~/.cshrc
+source /phenix/u/belmonrj/.cshrc
 
 cd /phenix/scratch/belmonrj/SimpleCodeVTX/
 
